@@ -1,0 +1,15 @@
+{
+  "name": "77339-task-force-1",
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Антон Башко",
+      "email": "pali4an@gmail.com"
+    }
+  ],
+  "require": {}
+}
