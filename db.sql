@@ -1,0 +1,47 @@
+CREATE DATABASE task_force_anton
+  DEFAULT CHARACTER SET utf8mb4
+  DEFAULT COLLATE utf8mb4_general_ci;
+
+USE task_force_anton;
+
+CREATE TABLE `categories` (
+  `id` INTEGER AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL UNIQUE,
+  `symbol_code` VARCHAR(50) NOT NULL UNIQUE,
+  PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `users` (
+  `id` INTEGER AUTO_INCREMENT,
+  `date_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `email` VARCHAR(50) NOT NULL UNIQUE,
+  `name` VARCHAR(100) NOT NULL,
+  `password` CHAR(60) NOT NULL,
+  `phone_number` VARCHAR(500) NOT NULL,
+  `role` VARCHAR(255) NOT NULL,
+  `location` VARCHAR(255) NOT NULL,
+  PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `tasks` (
+  `id` INTEGER AUTO_INCREMENT,
+  `date_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id` INTEGER NOT NULL,
+  `status` VARCHAR(255) NOT NULL,
+  `location` VARCHAR(255) NOT NULL,
+  `category_id` VARCHAR(255) NOT NULL,
+  `date_end` DATETIMENOT NULL DEFAULT,
+  `budget` INTEGER,
+  PRIMARY KEY(`id`)
+);
+
+
+ALTER TABLE `tasks`
+ADD FOREIGN KEY(`user_id`) REFERENCES `users`(`id`)
+ON UPDATE NO ACTION ON DELETE CASCADE;
+
+ALTER TABLE `tasks`
+ADD FOREIGN KEY(`category_id`) REFERENCES `category`(`id`)
+ON UPDATE NO ACTION ON DELETE CASCADE;
