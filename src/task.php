@@ -64,13 +64,19 @@ class Task
     public function getNextStatus(string $action): ?string
     {
         $transitions = [
-            self::ACTION_RESPOND => self::STATUS_IN_PROGRESS,
-            self::ACTION_CANCEL => self::STATUS_CANCELLED,
-            self::ACTION_EXECUTE => self::STATUS_COMPLETED,
-            self::ACTION_REFUSAL => self::STATUS_CANCELLED,
+            self::STATUS_NEW => [
+                "assign" => self::STATUS_IN_PROGRESS,
+                "cancel" => self::STATUS_CANCELLED,
+            ],
+            self::STATUS_IN_PROGRESS => [
+                "execute" => self::STATUS_COMPLETED,
+                "fail" => self::STATUS_FAILED,
+            ],
         ];
 
-        return $transitions[$action] ?? null;
+        $actionName = $action->getInternalName();
+
+        return $transitions[$this->currentStatus][$actionName] ?? null;
     }
 
     /**
@@ -81,10 +87,27 @@ class Task
 
     public function getAvailableActions(string $status): array
     {
-        $actions = [
-            self::STATUS_NEW => [self::ACTION_RESPOND, self::ACTION_CANCEL],
-            self::STATUS_IN_PROGRESS => [self::ACTION_EXECUTE, self::ACTION_REFUSAL],
-        ];
-        return $actions[$status] ?? [];
+        $actions = [];
+        if ($this->currentStatus === self::STATUS_NEW) {
+            if ($userId === $this->customerId) {
+                $actions[] = new ActionAssign();
+                $actions[] = new ActionCancel();
+            }
+            if ($this->executorId === null) {
+                $actions[] = new ActionRespond();
+            }
+        }
+
+        if ($this->currentStatus === self::STATUS_IN_PROGRESS) {
+            if ($userId === $this->customerId) {
+                $actions[] = new ActionExecute();
+            } else if ($userId === $this->executorId) {
+                $actions[] = new ActionFail();
+            }
+        }
+
+        return array_filter($actions, function ($action) use ($userId) {
+            return $action->isAvailable($this->customerId, $userId, $this->executorId);
+        });
     }
 }
