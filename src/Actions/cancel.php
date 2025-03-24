@@ -1,7 +1,7 @@
 <?php
-namespace App\Logics;
+namespace App\Actions;
 
-class Cancel extends Action
+class ActionCancel extends Action
 {
     public function getName(): string
     {
@@ -13,7 +13,7 @@ class Cancel extends Action
         return "cancel";
     }
 
-    public function isAvailable(int $customerId, int $userId, ?int $executorId): bool
+    public function isAvailable(int $userId, int $customerId, ?int $executorId): bool
     {
         return $userId === $customerId;
     }
