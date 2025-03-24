@@ -1,7 +1,7 @@
 <?php
-namespace App\Logics;
+namespace App\Actions;
 
-class Execute extends Action
+class ActionExecute extends Action
 {
     public function getName(): string
     {
@@ -13,7 +13,7 @@ class Execute extends Action
         return "execute";
     }
 
-    public function isAvailable(int $customerId, int $userId, ?int $executorId): bool
+    public function isAvailable(int $userId, int $customerId, ?int $executorId): bool
     {
         return $userId === $customerId;
     }

@@ -1,8 +1,21 @@
 <?php
-namespace App\Logics;
+namespace App\Actions;
+use App\Actions\Action;
+use App\Actions\ActionAssign;
+use App\Actions\ActionCancel;
+use App\Actions\ActionExecute;
+use App\Actions\ActionFail;
+use App\Actions\ActionRespond;
+use App\Exceptions\ActionException;
+use App\Exceptions\RolesException;
+use App\Exceptions\StatusException;
 
 class Task
 {
+    // роли
+    const string ROLE_CUSTOMER = 'customer';
+    const string ROLE_EXECUTOR = 'executor';
+
     // статусы
     const string STATUS_NEW = 'new';
     const string STATUS_CANCELLED = 'cancelled';
@@ -20,11 +33,20 @@ class Task
     private int $customerId;
     private int $executorId;
 
-    public function __construct(int $customerId, int $executorId, string $currentStatus = self::STATUS_NEW)
+    public function __construct(int $customerId, string $currentStatus = self::STATUS_NEW, ?int $executorId = null)
     {
         $this->customerId = $customerId;
         $this->executorId = $executorId;
         $this->currentStatus = $currentStatus;
+    }
+
+    public function checkRole(string $role): void
+    {
+        $availableRoles = [self::ROLE_CUSTOMER, self::ROLE_EXECUTOR];
+
+        if (!in_array($role, $availableRoles)) {
+            throw new RolesException("Неизвестная роль: $role");
+        }
     }
 
     /**
@@ -40,6 +62,14 @@ class Task
             self::STATUS_COMPLETED => 'Выполнено',
             self::STATUS_FAILED => 'Провалено'
         ];
+    }
+
+    public function setStatus(string $status): void {
+        $availableStatuses = [self::STATUS_NEW, self::STATUS_IN_PROGRESS, self::STATUS_COMPLETED, self::STATUS_FAILED, self::STATUS_CANCELLED];
+
+        if (!in_array($status, $availableStatuses)) {
+            throw new StatusException("Неизвестный статус: $status");
+        }
     }
 
     /**
@@ -61,7 +91,7 @@ class Task
      * @param string $action
      * @return string|null
      */
-    public function getNextStatus(string $action): ?string
+    public function getNextStatus(Action $action): ?string
     {
         $transitions = [
             self::STATUS_NEW => [
@@ -75,6 +105,10 @@ class Task
         ];
 
         $actionName = $action->getInternalName();
+
+        if (!isset($transitions[$this->currentStatus][$actionName])) {
+            throw new ActionException("Действие '$actionName' невозможно в статусе '{$this->currentStatus}'");
+        }
 
         return $transitions[$this->currentStatus][$actionName] ?? null;
     }
@@ -107,7 +141,7 @@ class Task
         }
 
         return array_filter($actions, function ($action) use ($userId) {
-            return $action->isAvailable($this->customerId, $userId, $this->executorId);
+            return $action->isAvailable($userId, $this->customerId, $this->executorId);
         });
     }
 }
