@@ -8,12 +8,15 @@ CREATE TABLE `categories` (
   `id` INTEGER AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL UNIQUE,
   `symbol_code` VARCHAR(50) NOT NULL UNIQUE,
+  `icon` VARCHAR(50) NULL,
   PRIMARY KEY(`id`)
 );
 
 CREATE TABLE `cities` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `name` VARCHAR(255) NOT NULL UNIQUE
+  `name` VARCHAR(255) NOT NULL UNIQUE,
+  `latitude` DECIMAL(10, 8),
+  `longitude` DECIMAL(11, 8)
 );
 
 CREATE TABLE `users` (
@@ -25,6 +28,10 @@ CREATE TABLE `users` (
   `city_id` INT,
   `avatar` VARCHAR(255),
   `date_create` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `telegram` VARCHAR(255),
+  `phone` VARCHAR(20),
+  `birthday` DATE,
+  `info` TEXT,
   FOREIGN KEY (city_id) REFERENCES cities(id)
 );
 
