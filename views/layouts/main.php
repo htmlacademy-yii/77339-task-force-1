@@ -18,6 +18,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 
 $this->registerCssFile('@web/css/normalize.css');
 $this->registerCssFile('@web/css/style.css');
+$this->registerCssFile('@web/css/site.css');
 ?>
 <?php
 $this->beginPage() ?>

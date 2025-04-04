@@ -12,6 +12,13 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'locale' => 'ru-RU',
+            'dateFormat' => 'php: d.m.Y',
+            'timeFormat' => 'php: H:i:s',
+            'datetimeFormat' => 'php: d.m.Y H:i:s',
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'v0lZHRxhb3helZ2OZp8at4wgBydAQntQ',
@@ -42,14 +49,13 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'tasks' => 'tasks/index',
             ],
         ],
-        */
     ],
     'params' => $params,
 ];
