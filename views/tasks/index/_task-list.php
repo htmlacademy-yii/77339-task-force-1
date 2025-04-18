@@ -5,7 +5,7 @@ use yii\widgets\ListView;
 
 <?= ListView::widget([
     'dataProvider' => $dataProvider,
-    'itemView' => '_preview-tasks',
+    'itemView' => '_preview-task',
     'layout' => "{items}",
     'options' => ['class' => 'task-list'],
     'itemOptions' => ['class' => 'task-card'],

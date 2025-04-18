@@ -6,7 +6,7 @@ use yii\helpers\Url;
 
 <div class="task-card">
     <div class="header-task">
-        <a href="<?= Url::to(['tasks/view', 'id' => $model->id]) ?>" class="link link--block link--big">
+        <a href="<?= Url::to(['/tasks/view', 'id' => $model->id]) ?>" class="link link--block link--big">
             <?= Html::encode($model->title) ?>
         </a>
         <p class="price price--task"><?= Html::encode($model->budget) ?> ₽</p>

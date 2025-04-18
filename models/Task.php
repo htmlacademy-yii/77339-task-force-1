@@ -104,6 +104,28 @@ class Task extends ActiveRecord
     }
 
     /**
+     * @return array
+     */
+    public static function getStatusLabels(): array
+    {
+        return [
+            self::STATUS_NEW => 'Новое',
+            self::STATUS_IN_PROGRESS => 'В работе',
+            self::STATUS_COMPLETED => 'Выполнено',
+            self::STATUS_FAILED => 'Провалено',
+            self::STATUS_CANCELED => 'Отменено'
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusLabel(): string
+    {
+        return self::getStatusLabels()[$this->status] ?? $this->status;
+    }
+
+    /**
      * Поиск задач с фильтрами
      */
     public function getSearchQuery(): ActiveQuery
@@ -229,7 +251,7 @@ class Task extends ActiveRecord
      *
      * @return ActiveQuery
      */
-    public function getFile(): ActiveQuery
+    public function getFiles(): ActiveQuery
     {
         return $this->hasMany(File::class, ['task_id' => 'id']);
     }
@@ -239,7 +261,7 @@ class Task extends ActiveRecord
      *
      * @return ActiveQuery
      */
-    public function getResponse(): ActiveQuery
+    public function getResponses(): ActiveQuery
     {
         return $this->hasMany(Response::class, ['task_id' => 'id']);
     }
@@ -249,7 +271,7 @@ class Task extends ActiveRecord
      *
      * @return ActiveQuery
      */
-    public function getReview(): ActiveQuery
+    public function getReviews(): ActiveQuery
     {
         return $this->hasMany(Review::class, ['task_id' => 'id']);
     }

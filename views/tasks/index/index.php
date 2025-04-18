@@ -5,6 +5,8 @@
 /** @var array $categories */
 /** @var $task */
 /** @var $tasksQuery */
+
+$this->title = "Задания";
 ?>
 
 <main class="main-content container">
