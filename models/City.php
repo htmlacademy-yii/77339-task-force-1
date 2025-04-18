@@ -15,6 +15,8 @@ use yii\db\ActiveRecord;
  * @property float|null $longitude
  *
  * @property Task[] $task
+ * @property-read ActiveQuery $users
+ * @property-read ActiveQuery $tasks
  * @property User[] $user
  */
 class City extends ActiveRecord
@@ -61,7 +63,7 @@ class City extends ActiveRecord
      *
      * @return ActiveQuery
      */
-    public function getTask(): ActiveQuery
+    public function getTasks(): ActiveQuery
     {
         return $this->hasMany(Task::class, ['city_id' => 'id']);
     }

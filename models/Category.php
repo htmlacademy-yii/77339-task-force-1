@@ -16,6 +16,8 @@ use yii\db\ActiveRecord;
  *
  * @property Task[] $task
  * @property UserSpecialization[] $userSpecialization
+ * @property-read ActiveQuery $tasks
+ * @property-read ActiveQuery $userSpecializations
  * @property User[] $user
  */
 class Category extends ActiveRecord
@@ -61,7 +63,7 @@ class Category extends ActiveRecord
      *
      * @return ActiveQuery
      */
-    public function getTask(): ActiveQuery
+    public function getTasks(): ActiveQuery
     {
         return $this->hasMany(Task::class, ['category_id' => 'id']);
     }
@@ -71,7 +73,7 @@ class Category extends ActiveRecord
      *
      * @return ActiveQuery
      */
-    public function getUserSpecialization(): ActiveQuery
+    public function getUserSpecializations(): ActiveQuery
     {
         return $this->hasMany(UserSpecialization::class, ['category_id' => 'id']);
     }
@@ -82,7 +84,7 @@ class Category extends ActiveRecord
      * @return ActiveQuery
      * @throws InvalidConfigException
      */
-    public function getUser(): ActiveQuery
+    public function getUsers(): ActiveQuery
     {
         return $this->hasMany(User::class, ['id' => 'user_id'])->viaTable('user_specializations', ['category_id' => 'id']);
     }

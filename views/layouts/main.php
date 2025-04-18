@@ -6,6 +6,7 @@
 
 use app\assets\AppAsset;
 use yii\bootstrap5\Html;
+use yii\helpers\Url;
 
 AppAsset::register($this);
 
@@ -36,8 +37,8 @@ $this->beginBody() ?>
 <div class="table-layout">
     <header class="page-header">
         <nav class="main-nav">
-            <a href='#' class="header-logo">
-                <img class="logo-image" src="img/logotype.png" width=227 height=60 alt="taskforce">
+            <a href='<?= Url::to('/tasks') ?>' class="header-logo">
+                <img class="logo-image" src="<?= Url::to('@web/img/logotype.png') ?>" width=227 height=60 alt="taskforce">
             </a>
             <div class="nav-wrapper">
                 <ul class="nav-list">
@@ -58,7 +59,7 @@ $this->beginBody() ?>
         </nav>
         <div class="user-block">
             <a href="#">
-                <img class="user-photo" src="img/man-glasses.png" width="55" height="55" alt="Аватар">
+                <img class="user-photo" src="<?= Url::to('@web/img/man-glasses.png') ?>" width="55" height="55" alt="Аватар">
             </a>
             <div class="user-menu">
                 <p class="user-name">Василий</p>
@@ -78,10 +79,7 @@ $this->beginBody() ?>
             </div>
         </div>
     </header>
-
-    <div class="main-container">
         <?= $content ?>
-    </div>
 </div>
 
 <?php
