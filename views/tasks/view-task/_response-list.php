@@ -1,8 +1,9 @@
 <?php
 
+use yii\data\ActiveDataProvider;
 use yii\widgets\ListView;
 
-/** @var $responsesDataProvider */
+/** @var ActiveDataProvider $responsesDataProvider */
 ?>
 
 <?= ListView::widget([

@@ -2,50 +2,51 @@
 
 namespace app\models;
 
+use app\handlers\UserAfterSaveHandler;
 use DateMalformedStringException;
 use DateTime;
 use Yii;
+use yii\base\Exception;
 use yii\base\InvalidConfigException;
-use yii\behaviors\TimestampBehavior;
-use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
 
 /**
- * This is the model class for table "users".
+ * Class User
  *
  * @property int $id
  * @property string $name
  * @property string $email
- * @property string $password_hash
+ * @property string|null $password_hash
+ * @property string|null $auth_key
  * @property string $role
- * @property int|null $city_id
  * @property string|null $avatar
  * @property string|null $telegram
  * @property string|null $phone
- * @property int|null $show_contacts
  * @property string|null $birthday
  * @property string|null $info
  * @property string|null $created_at
- * @property int $accepts_orders
+ * @property float|null $executor_rating
+ * @property int|null $executor_reviews_count
+ * @property int|null $city_id
+ * @property int|null $show_contacts
  *
- * @property Category[] $category
- * @property City $city
- * @property Response[] $response
- * @property Review[] $review
- * @property Review[] $review0
- * @property Task[] $task
- * @property Task[] $task0
- * @property UserSpecialization[] $userSpecialization
- * @property float|int $executor_rating
+ * @property-read City|null $city
+ * @property-read Category[] $categories
+ * @property-read Response[] $responses
+ * @property-read Review[] $reviews
+ * @property-read Review[] $executorReviews
+ * @property-read Task[] $tasks
+ * @property-read Task[] $executorTasks
  * @property-read null|int $age
  * @property-read int $executorReviewsCount
- * @property-read ActiveQuery $categories
- * @property-read ActiveQuery $executorReviews
- * @property-read float $executorRating
- * @property int $executor_reviews_count
+ * @property-read ActiveQuery $failedTasks
+ * @property-write mixed $password
+ * @property-read null|string $authKey
+ * @property-read UserSpecialization[] $userSpecializations
  */
-class User extends ActiveRecord
+class User extends ActiveRecord implements IdentityInterface
 {
 
     /**
@@ -71,7 +72,6 @@ class User extends ActiveRecord
             [['city_id', 'avatar', 'telegram', 'phone', 'birthday', 'info'], 'default', 'value' => null],
             [['show_contacts', 'executor_reviews_count'], 'default', 'value' => 0],
             [['executor_rating'], 'default', 'value' => 0.00],
-            [['name', 'email', 'password_hash', 'role'], 'required'],
             [['accepts_orders'], 'boolean'],
             [['role', 'info'], 'string'],
             [['city_id', 'show_contacts', 'executor_reviews_count'], 'integer'],
@@ -82,6 +82,7 @@ class User extends ActiveRecord
             [['executor_rating'], 'default', 'value' => 0],
             ['role', 'in', 'range' => array_keys(self::optsRole())],
             [['email'], 'unique'],
+            [['email'], 'email'],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::class, 'targetAttribute' => ['city_id' => 'id']],
         ];
     }
@@ -93,11 +94,9 @@ class User extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'email' => 'Email',
-            'password_hash' => 'Password Hash',
+            'name' => 'Ваше имя',
+            'email' => 'Электронная почта',
             'role' => 'Role',
-            'city_id' => 'City ID',
             'avatar' => 'Avatar',
             'telegram' => 'Telegram',
             'accepts_orders' => 'Is accept',
@@ -131,43 +130,29 @@ class User extends ActiveRecord
         return $this->hasMany(Review::class, ['executor_id' => 'id']);
     }
 
-    /**
-     * Определяет поведения модели.
-     *
-     * Добавляет автоматическое обновление рейтинга исполнителя и количества отзывов:
-     * - При создании (EVENT_AFTER_INSERT)
-     * - При обновлении (EVENT_AFTER_UPDATE)
-     *
-     * @return array Конфигурация поведений модели
-     *
-     * @uses calculateExecutorRating() Для расчёта текущего рейтинга исполнителя
-     * @uses getExecutorReviews() Для получения связанных отзывов
-     *
-     * @example
-     * При изменении статуса задания или добавлении отзыва автоматически
-     * пересчитывает рейтинг исполнителя по формуле:
-     * сумма оценок / (количество отзывов + проваленные задания)
-     */
     public function behaviors(): array
     {
         return [
-            [
-                'class' => TimestampBehavior::class,
-                'attributes' => [
-                    ActiveRecord::EVENT_AFTER_INSERT => ['executor_rating', 'executor_reviews_count'],
-                    ActiveRecord::EVENT_AFTER_UPDATE => ['executor_rating', 'executor_reviews_count'],
-                ],
-                'value' => function ($event) {
-                    if ($this->role === self::ROLE_EXECUTOR) {
-                        return [
-                            'executor_rating' => $this->calculateExecutorRating(),
-                            'executor_reviews_count' => $this->getExecutorReviews()->count(),
-                        ];
-                    }
-                    return null;
-                }
-            ]
+            'afterSaveHandler' => [
+                'class' => UserAfterSaveHandler::class,
+            ],
         ];
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function setPassword($password): void
+    {
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function generateAuthKey(): void
+    {
+        $this->auth_key = Yii::$app->security->generateRandomString();
     }
 
     /**
@@ -184,6 +169,26 @@ class User extends ActiveRecord
         return ($reviewCount + $failedTasksCount) > 0 ? $totalRating / ($reviewCount + $failedTasksCount) : 0;
     }
 
+    /**
+     * Возвращает место в рейтинге среди исполнителей
+     * @return int
+     */
+    public function getExecutorRank(): int
+    {
+        $subQuery = self::find()
+            ->select(['id', 'executor_rating'])
+            ->where(['role' => self::ROLE_EXECUTOR])
+            ->andWhere(['not', ['executor_rating' => null]])
+            ->orderBy(['executor_rating' => SORT_DESC]);
+
+        $rank = (new \yii\db\Query())
+            ->select(['rank' => 'COUNT(*) + 1'])
+            ->from(['u' => $subQuery])
+            ->where(['>', 'u.executor_rating', $this->executor_rating])
+            ->scalar();
+
+        return $rank ?: 1;
+    }
 
     /**
      * Обновляет вычисляемые значения в базе данных
@@ -364,5 +369,45 @@ class User extends ActiveRecord
     {
         return $this->hasMany(Task::class, ['executor_id' => 'id'])
             ->andWhere(['status' => Task::STATUS_FAILED]);
+    }
+
+    public static function findIdentity($id)
+    {
+        // TODO: Implement findIdentity() method.
+    }
+
+    /**
+     * @param $token
+     * @param $type
+     * @return IdentityInterface|null
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        // TODO: Implement findIdentityByAccessToken() method.
+    }
+
+    /**
+     * @return int|string
+     */
+    public function getId()
+    {
+        // TODO: Implement getId() method.
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAuthKey()
+    {
+        // TODO: Implement getAuthKey() method.
+    }
+
+    /**
+     * @param $authKey
+     * @return bool|null
+     */
+    public function validateAuthKey($authKey)
+    {
+        // TODO: Implement validateAuthKey() method.
     }
 }

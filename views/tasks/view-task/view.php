@@ -1,11 +1,10 @@
 <?php
 
-/** @var $task */
-/** @var $responsesDataProvider */
+/** @var Task $task */
+/** @var ActiveDataProvider $responsesDataProvider */
 
-use yii\helpers\Html;
-use yii\helpers\Url;
-
+use app\models\Task;
+use yii\data\ActiveDataProvider;
 $this->title = $task->title;
 ?>
 

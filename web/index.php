@@ -1,7 +1,7 @@
 <?php
 
 // comment out the following two lines when deployed to production
-use app\models\City;
+//use app\models\City;
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');

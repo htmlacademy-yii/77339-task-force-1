@@ -40,6 +40,7 @@ $this->beginBody() ?>
             <a href='<?= Url::to('/tasks') ?>' class="header-logo">
                 <img class="logo-image" src="<?= Url::to('@web/img/logotype.png') ?>" width=227 height=60 alt="taskforce">
             </a>
+            <?php if (Yii::$app->controller->id !== 'signup'): ?>
             <div class="nav-wrapper">
                 <ul class="nav-list">
                     <li class="list-item list-item--active">
@@ -56,7 +57,9 @@ $this->beginBody() ?>
                     </li>
                 </ul>
             </div>
+            <?php endif; ?>
         </nav>
+        <?php if (Yii::$app->controller->id !== 'signup'): ?>
         <div class="user-block">
             <a href="#">
                 <img class="user-photo" src="<?= Url::to('@web/img/man-glasses.png') ?>" width="55" height="55" alt="Аватар">
@@ -78,6 +81,7 @@ $this->beginBody() ?>
                 </div>
             </div>
         </div>
+        <?php endif; ?>
     </header>
         <?= $content ?>
 </div>
