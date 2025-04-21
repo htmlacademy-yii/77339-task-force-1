@@ -12,7 +12,7 @@
         <dt>Всего заказов</dt>
         <dd><?= $completedTasks ?> выполнено, <?= $failedTasks ?> провалено</dd>
         <dt>Место в рейтинге</dt>
-        <dd><?= $user->calculateExecutorRating() ?> место</dd>
+        <dd><?= $user->getExecutorRank() ?> место</dd>
         <dt>Дата регистрации</dt>
         <dd><?= Yii::$app->formatter->asDate($user->created_at, 'long') ?></dd>
         <dt>Статус</dt>

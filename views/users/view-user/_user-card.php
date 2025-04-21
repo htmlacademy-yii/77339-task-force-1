@@ -1,8 +1,9 @@
 <?php
 
-/** @var $user */
+/** @var $user User */
 
-use app\custom_components\StarRatingWidget\StarRatingWidget;
+use app\customComponents\StarRatingWidget\StarRatingWidget;
+use app\models\User;
 use yii\helpers\Html;
 use yii\helpers\Url;
 ?>
@@ -12,7 +13,7 @@ use yii\helpers\Url;
         <img class="card-photo" src="<?= Url::to('@web/img/' . $user->avatar) ?>" width="191" height="190" alt="Фото пользователя">
         <div class="card-rate">
             <?= StarRatingWidget::widget(
-                ['rating' => $user->calculateExecutorRating(), 'wrapperClass' => 'stars-rating big',]
+                ['rating' => $user->executor_rating, 'wrapperClass' => 'stars-rating big',]
             ) ?>
             <span class="current-rate"><?= number_format($user->executor_rating, 2) ?></span>
         </div>

@@ -1,8 +1,10 @@
 <?php
 
-/** @var $task */
-/** @var $responsesDataProvider */
+/** @var Task $task */
+/** @var ActiveDataProvider $responsesDataProvider */
 
+use app\models\Task;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\helpers\Url;
 

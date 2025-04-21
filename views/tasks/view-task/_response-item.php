@@ -1,9 +1,8 @@
 <?php
-/** @var $task */
 
 /** @var Response $model */
 
-use app\custom_components\StarRatingWidget\StarRatingWidget;
+use app\customComponents\StarRatingWidget\StarRatingWidget;
 use app\models\Response;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -18,7 +17,7 @@ use yii\helpers\Url;
             ) ?></a>
         <div class="response-wrapper">
             <?= StarRatingWidget::widget(
-                ['rating' => $model->executor->calculateExecutorRating(), 'wrapperClass' => 'stars-rating small',]
+                ['rating' => $model->executor->executor_rating, 'wrapperClass' => 'stars-rating small',]
             ) ?>
             <p class="reviews"><?= $model->executor->executor_reviews_count ?></p>
         </div>
