@@ -1,5 +1,7 @@
 <?php
 
+use Psy\Shell;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -36,10 +38,16 @@ $config = [
             'fixtureDataPath' => '@common/fixtures/data',
             'namespace' => 'common\fixtures',
         ],
+        'shell' => [
+            'class' => 'yii\console\Controller',
+            'action' => function() {
+                Shell::debug();
+            }
+        ],
     ],
 ];
 
-if (YII_ENV_DEV) {
+if (defined('YII_ENV_DEV') && YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
