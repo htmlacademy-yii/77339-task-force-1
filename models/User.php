@@ -44,6 +44,7 @@ use yii\web\IdentityInterface;
  * @property-read ActiveQuery $failedTasks
  * @property-write mixed $password
  * @property-read null|string $authKey
+ * @property-read int $executorRank
  * @property-read UserSpecialization[] $userSpecializations
  */
 class User extends ActiveRecord implements IdentityInterface
@@ -148,14 +149,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @throws Exception
-     */
-    public function generateAuthKey(): void
-    {
-        $this->auth_key = Yii::$app->security->generateRandomString();
-    }
-
-    /**
      * Рассчитывает рейтинг исполнителя
      *
      * @return float|int
@@ -203,6 +196,28 @@ class User extends ActiveRecord implements IdentityInterface
 
             $this->updateAttributes(['executor_rating', 'executor_reviews_count']);
         }
+    }
+
+    /**
+     * Ищет пользователя по email
+     *
+     * @param string $email
+     * @return static|null
+     */
+    public static function findByEmail(string $email): ?self
+    {
+        return self::findOne(['email' => $email]);
+    }
+
+    /**
+     * Валидирует пароль
+     *
+     * @param string $password
+     * @return bool
+     */
+    public function validatePassword(string $password): bool
+    {
+        return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 
     /**
@@ -371,9 +386,23 @@ class User extends ActiveRecord implements IdentityInterface
             ->andWhere(['status' => Task::STATUS_FAILED]);
     }
 
-    public static function findIdentity($id)
+    /**
+     * @throws Exception
+     */
+    public function beforeSave($insert): bool
     {
-        // TODO: Implement findIdentity() method.
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->auth_key = Yii::$app->security->generateRandomString();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static function findIdentity($id): User|IdentityInterface|null
+    {
+        return static::findOne($id);
     }
 
     /**
@@ -381,33 +410,33 @@ class User extends ActiveRecord implements IdentityInterface
      * @param $type
      * @return IdentityInterface|null
      */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public static function findIdentityByAccessToken($token, $type = null): ?IdentityInterface
     {
-        // TODO: Implement findIdentityByAccessToken() method.
+        return null;
     }
 
     /**
      * @return int|string
      */
-    public function getId()
+    public function getId(): int|string
     {
-        // TODO: Implement getId() method.
+        return $this->id;
     }
 
     /**
      * @return string|null
      */
-    public function getAuthKey()
+    public function getAuthKey(): ?string
     {
-        // TODO: Implement getAuthKey() method.
+        return $this->auth_key;
     }
 
     /**
      * @param $authKey
      * @return bool|null
      */
-    public function validateAuthKey($authKey)
+    public function validateAuthKey($authKey): ?bool
     {
-        // TODO: Implement validateAuthKey() method.
+        return $this->auth_key === $authKey;
     }
 }
