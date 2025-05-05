@@ -10,12 +10,13 @@ use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
-class UsersController extends Controller
+class UsersController extends SecuredController
 {
     /**
      * @throws NotFoundHttpException
      */
-    public function actionView(int $id): string {
+    public function actionView(int $id): string
+    {
         $user = User::find()
             ->with(['city', 'categories'])
             ->where(['id' => $id, 'role' => User::ROLE_EXECUTOR])
@@ -35,7 +36,7 @@ class UsersController extends Controller
         ]);
         $completedTasks = Task::find()
             ->where(['executor_id' => $id, 'status' => Task::STATUS_COMPLETED])
-        ->count();
+            ->count();
 
         $failedTasks = Task::find()
             ->where(['executor_id' => $id, 'status' => Task::STATUS_FAILED])

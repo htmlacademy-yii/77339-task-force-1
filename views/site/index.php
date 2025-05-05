@@ -1,27 +1,20 @@
 <?php
+/* @var $this yii/web/View */
+/* @var $model LoginForm */
 
-/** @var yii\web\View $this */
+use app\models\LoginForm;
+use yii\widgets\ActiveForm;
 
-use app\models\Category;
-use app\models\City;
-
-$this->title = 'TaskForce';
 ?>
-    <!--    <div>-->
-    <!--        <h1>Hello, world!!</h1>-->
-    <!--    </div>-->
-    <!---->
-<?php
-//$cities = City::find()
-//->limit(10)
-//->offset(20)
-//->all();
-//
-//foreach ($cities as $city) {
-//echo "<p>{$city->name} ({$city->latitude}, {$city->longitude})</p>";
-//}
-//
-//$categories = Category::find()->all();
-//foreach ($categories as $category) {
-//    echo "<p>{$category->name}: {$category->icon}</p>";
-//}
+
+<section class="modal enter-form form-modal" id="enter-form">
+    <h2>Вход на сайт</h2>
+    <?php $form = ActiveForm::begin(['enableAjaxValidation' => true, 'action' => ['auth/login']]); ?>
+    <?= $form->field($model, 'email', ['labelOptions' => ['class' => 'form-modal-description'],
+        'inputOptions' => ['class' => 'enter-form-email input input-middle']]); ?>
+    <?= $form->field($model, 'password', ['labelOptions' => ['class' => 'form-modal-description'],
+    'inputOptions' => ['class' => 'enter-form-password input input-middle', 'type' => 'password']])->passwordInput(); ?>
+    <button class="button" type="submit">Войти</button>
+    <?php ActiveForm::end(); ?>
+    <button class="form-modal-close" type="button">Закрыть</button>
+</section>

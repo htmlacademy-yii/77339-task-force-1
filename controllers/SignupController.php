@@ -21,13 +21,13 @@ class SignupController extends Controller
         $cities = City::find()->select(['name', 'id'])->indexBy('id')->column();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-                $signupAction = new SignupUserAction();
-                $user = $signupAction->execute($model);
+            $signupAction = new SignupUserAction();
+            $user = $signupAction->execute($model);
 
-                if ($user) {
-                    Yii::$app->user->login($user);
-                    return $this->goHome();
-                }
+            if ($user) {
+                Yii::$app->user->login($user);
+                return $this->goHome();
+            }
         }
         return $this->render('index', [
             'model' => $model,

@@ -7,10 +7,12 @@ use yii\helpers\Url;
 /** @var $model app\models\Response */
 ?>
 <div class="response-card">
-    <img class="customer-photo" src="<?= Url::to('@web/img/' . $model->task->customer->avatar) ?>" width="120" height="127" alt="Фото заказчика">
+    <img class="customer-photo" src="<?= Url::to('@web/img/' . $model->task->customer->avatar) ?>" width="120" height="127"
+         alt="Фото заказчика">
     <div class="feedback-wrapper">
         <p class="feedback">«<?= Html::encode($model->comment) ?>»</p>
-        <p class="task">Задание «<a href="<?= Url::to(['tasks/view', 'id' => $model->task->id]) ?>" class="link link--small"><?= Html::encode($model->task->title) ?></a>»
+        <p class="task">Задание «<a href="<?= Url::to(['tasks/view', 'id' => $model->task->id]) ?>"
+                                    class="link link--small"><?= Html::encode($model->task->title) ?></a>»
             <?= Html::encode(Task::getStatusLabels()[$model->task->status] ?? $model->task->status) ?></p>
     </div>
     <div class="feedback-wrapper">

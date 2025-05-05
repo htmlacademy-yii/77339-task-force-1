@@ -1,5 +1,7 @@
 <?php
+
 use yii\widgets\LinkPager;
+
 /** @var yii\data\Pagination $pagination */
 ?>
 

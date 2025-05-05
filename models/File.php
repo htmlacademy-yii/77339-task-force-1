@@ -38,7 +38,13 @@ class File extends ActiveRecord
             [['task_id'], 'integer'],
             [['created_at'], 'safe'],
             [['path'], 'string', 'max' => 255],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::class, 'targetAttribute' => ['task_id' => 'id']],
+            [
+                ['task_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Task::class,
+                'targetAttribute' => ['task_id' => 'id']
+            ],
         ];
     }
 
@@ -56,7 +62,7 @@ class File extends ActiveRecord
     }
 
     /**
-     * Gets query for [[Task]].
+     * Gets a query for [[Task]].
      *
      * @return ActiveQuery
      */
