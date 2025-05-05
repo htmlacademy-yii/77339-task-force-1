@@ -1,5 +1,10 @@
 <?php
 
+use app\interfaces\FilesUploadInterface;
+use app\interfaces\TaskValidatorInterface;
+use app\services\FileUploader;
+use app\services\TaskValidator;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -9,7 +14,7 @@ $config = [
     'bootstrap' => ['log'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
     ],
     'components' => [
         'formatter' => [
@@ -29,6 +34,7 @@ $config = [
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
+            'loginUrl' => ['site/index'],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -54,10 +60,18 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 'tasks' => 'tasks/index',
+                'publish' => 'task-creation/create',
                 'tasks/view/<id:\d+>' => 'tasks/view',
                 'users/view/<id:\d+>' => 'users/view',
                 'signup' => 'signup/index',
+                'login' => 'auth/login',
+                'logout' => 'auth/logout',
             ],
+        ],
+    ],
+    'container' => [
+        'singletons' => [
+            FilesUploadInterface::class => FileUploader::class,
         ],
     ],
     'params' => $params,

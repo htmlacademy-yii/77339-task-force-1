@@ -2,10 +2,13 @@
 
 namespace app\models;
 
-use Yii;
+use AllowDynamicProperties;
+use app\interfaces\FilesUploadInterface;
+use app\interfaces\TaskValidatorInterface;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use app\models\TaskStatus;
 
 /**
  * This is the model class for table "tasks".
@@ -30,23 +33,30 @@ use yii\db\ActiveRecord;
  * @property User $executor
  * @property File[] $files
  * @property Response[] $responses
+ * @property-read string $statusLabel
+ * @property-read ActiveQuery $searchQuery
  * @property Review[] $reviews
+ * @property FilesUploadInterface $fileUploader
+ * @property TaskValidatorInterface $validator
  */
 class Task extends ActiveRecord
 {
-    public $categoryIds = [];
-    public $noResponses = '0';
-    public $noLocation = '0';
+    public array $categoryIds = [];
+    public string $noResponses = '0';
+    public string $noLocation = '0';
     public $filterPeriod;
+    public array $files = [];
 
     /**
      * ENUM field values
      */
-    const string STATUS_NEW = 'new';
-    const string STATUS_IN_PROGRESS = 'in_progress';
-    const string STATUS_COMPLETED = 'completed';
-    const string STATUS_FAILED = 'failed';
-    const string STATUS_CANCELED = 'canceled';
+    public const string STATUS_NEW = 'new';
+    public const string STATUS_IN_PROGRESS = 'in_progress';
+    public const string STATUS_COMPLETED = 'completed';
+    public const string STATUS_FAILED = 'failed';
+    public const string STATUS_CANCELED = 'canceled';
+
+    public const string SCENARIO_CREATE = 'create';
 
     /**
      * {@inheritdoc}
@@ -56,30 +66,53 @@ class Task extends ActiveRecord
         return 'tasks';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules(): array
     {
         return [
             [['budget', 'city_id', 'latitude', 'longitude', 'ended_at', 'executor_id'], 'default', 'value' => null],
-            [['status'], 'default', 'value' => 'new'],
-            [['title', 'description', 'category_id', 'customer_id'], 'required'],
+            [['status'], 'default', 'value' => TaskStatus::STATUS_NEW],
+            [
+                ['title', 'description', 'category_id', 'customer_id'],
+                'required',
+                'on' => self::SCENARIO_CREATE,
+                'message' => 'Поле обязательно для заполнения'
+            ],
+            [['title'], 'string', 'min' => 10, 'on' => self::SCENARIO_CREATE],
+            [['description'], 'string', 'min' => 30, 'on' => self::SCENARIO_CREATE],
+            [
+                ['category_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Category::class,
+                'targetAttribute' => ['category_id' => 'id']
+            ],
+            ['budget', 'integer', 'min' => 1, 'on' => self::SCENARIO_CREATE],
+            ['ended_at', 'date', 'format' => 'php:Y-m-d', 'on' => self::SCENARIO_CREATE],
+            ['ended_at', 'validateDeadline', 'on' => self::SCENARIO_CREATE],
+            [['files'], 'file', 'skipOnEmpty' => true, 'maxFiles' => 10, 'on' => self::SCENARIO_CREATE],
             [['description', 'status'], 'string'],
             [['category_id', 'city_id', 'customer_id', 'executor_id'], 'integer'],
             [['budget', 'latitude', 'longitude'], 'number'],
             [['ended_at', 'created_at'], 'safe'],
             [['title'], 'string', 'max' => 255],
-            ['status', 'in', 'range' => array_keys(self::optsStatus())],
-            [['category_id'], 'string'],
-            [['categoryIds'], 'each', 'rule' => ['integer']],
-            [['noResponses', 'noLocation'], 'boolean'],
-            [['filterPeriod'], 'integer'],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::class, 'targetAttribute' => ['city_id' => 'id']],
-            [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['customer_id' => 'id']],
-            [['executor_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['executor_id' => 'id']],
+            ['status', 'in', 'range' => TaskStatus::getValidStatuses()],
+            [
+                ['customer_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => User::class,
+                'targetAttribute' => ['customer_id' => 'id']
+            ],
+            [
+                ['executor_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => User::class,
+                'targetAttribute' => ['executor_id' => 'id']
+            ],
         ];
     }
+
 
     /**
      * {@inheritdoc}
@@ -88,19 +121,35 @@ class Task extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'title' => 'Title',
-            'description' => 'Description',
-            'category_id' => 'Category ID',
-            'budget' => 'Budget',
+            'title' => 'Опишите суть работы',
+            'description' => 'Подробности задания',
+            'category_id' => 'Категория',
+            'budget' => 'Бюджет',
             'status' => 'Status',
-            'city_id' => 'City ID',
+            'city_id' => 'Локация',
             'latitude' => 'Latitude',
             'longitude' => 'Longitude',
-            'ended_at' => 'Ended At',
+            'ended_at' => 'Срок исполнения',
             'customer_id' => 'Customer ID',
             'executor_id' => 'Executor ID',
             'created_at' => 'Created At',
         ];
+    }
+
+    private FilesUploadInterface $fileUploader;
+
+    public function setFileUploader(FilesUploadInterface $fileUploader): void
+    {
+        $this->fileUploader = $fileUploader;
+    }
+
+    public function processFiles(array $files): array
+    {
+        if ($this->isNewRecord) {
+            throw new \RuntimeException('Невозможно обработать файлы для несохраненной задачи');
+        }
+
+        return $this->fileUploader->upload($files, $this->id);
     }
 
     /**
@@ -117,12 +166,20 @@ class Task extends ActiveRecord
         ];
     }
 
+    public function validateDeadline($attribute, $params): bool
+    {
+        if ($this->$attribute && strtotime($this->$attribute) <= strtotime('now')) {
+            $this->addError($attribute, 'Срок исполнения не может быть раньше текущей даты');
+        }
+        return true;
+    }
+
     /**
      * @return string
      */
     public function getStatusLabel(): string
     {
-        return self::getStatusLabels()[$this->status] ?? $this->status;
+        return TaskStatus::getLabel($this->status);
     }
 
     /**
@@ -143,10 +200,8 @@ class Task extends ActiveRecord
         }
 
         if ($this->noResponses) {
-            $query->andWhere(['not exists',
-                Response::find()
-                    ->where('responses.task_id = tasks.id')
-            ]);
+            $query->leftJoin('responses', 'responses.task_id = tasks.id')
+                ->andWhere(['responses.id' => null]);
         }
 
         if ($this->noLocation) {
@@ -154,7 +209,9 @@ class Task extends ActiveRecord
         }
 
         if ($this->filterPeriod) {
-            $query->andWhere(['>=', 'created_at',
+            $query->andWhere([
+                '>=',
+                'created_at',
                 date('Y-m-d H:i:s', time() - (int)$this->filterPeriod)
             ]);
         }
@@ -175,7 +232,7 @@ class Task extends ActiveRecord
     }
 
     /**
-     * Gets query for [[Category]].
+     * Gets a query for [[Category]].
      *
      * @return ActiveQuery
      */
@@ -217,7 +274,7 @@ class Task extends ActiveRecord
     }
 
     /**
-     * Gets query for [[City]].
+     * Gets a query for [[City]].
      *
      * @return ActiveQuery
      */
@@ -227,7 +284,7 @@ class Task extends ActiveRecord
     }
 
     /**
-     * Gets query for [[Customer]].
+     * Gets a query for [[Customer]].
      *
      * @return ActiveQuery
      */
@@ -237,7 +294,7 @@ class Task extends ActiveRecord
     }
 
     /**
-     * Gets query for [[Executor]].
+     * Gets a query for [[Executor]].
      *
      * @return ActiveQuery
      */
@@ -247,7 +304,7 @@ class Task extends ActiveRecord
     }
 
     /**
-     * Gets query for [[Files]].
+     * Gets a query for [[Files]].
      *
      * @return ActiveQuery
      */
@@ -257,7 +314,7 @@ class Task extends ActiveRecord
     }
 
     /**
-     * Gets query for [[Responses]].
+     * Gets a query for [[Responses]].
      *
      * @return ActiveQuery
      */
@@ -267,7 +324,7 @@ class Task extends ActiveRecord
     }
 
     /**
-     * Gets query for [[Reviews]].
+     * Gets a query for [[Reviews]].
      *
      * @return ActiveQuery
      */
@@ -305,12 +362,15 @@ class Task extends ActiveRecord
      */
     public function isStatusNew(): bool
     {
-        return $this->status === self::STATUS_NEW;
+        return $this->status === TaskStatus::STATUS_NEW;
     }
 
-    public function setStatusToNew(): void
+    public function setStatus(string $status): void
     {
-        $this->status = self::STATUS_NEW;
+        if (!in_array($status, TaskStatus::getValidStatuses())) {
+            throw new \InvalidArgumentException('Invalid status');
+        }
+        $this->status = $status;
     }
 
     /**
@@ -318,50 +378,21 @@ class Task extends ActiveRecord
      */
     public function isStatusInProgress(): bool
     {
-        return $this->status === self::STATUS_IN_PROGRESS;
+        return $this->status === TaskStatus::STATUS_IN_PROGRESS;
     }
 
-    public function setStatusToInProgress(): void
-    {
-        $this->status = self::STATUS_IN_PROGRESS;
-    }
-
-    /**
-     * @return bool
-     */
     public function isStatusCompleted(): bool
     {
-        return $this->status === self::STATUS_COMPLETED;
+        return $this->status === TaskStatus::STATUS_COMPLETED;
     }
 
-    public function setStatusToCompleted(): void
-    {
-        $this->status = self::STATUS_COMPLETED;
-    }
-
-    /**
-     * @return bool
-     */
     public function isStatusFailed(): bool
     {
-        return $this->status === self::STATUS_FAILED;
+        return $this->status === TaskStatus::STATUS_FAILED;
     }
 
-    public function setStatusToFailed(): void
-    {
-        $this->status = self::STATUS_FAILED;
-    }
-
-    /**
-     * @return bool
-     */
     public function isStatusCanceled(): bool
     {
-        return $this->status === self::STATUS_CANCELED;
-    }
-
-    public function setStatusToCanceled(): void
-    {
-        $this->status = self::STATUS_CANCELED;
+        return $this->status === TaskStatus::STATUS_CANCELED;
     }
 }

@@ -16,8 +16,11 @@ class SignupForm extends Model
     public function rules(): array
     {
         return [
-            [['name', 'email', 'password', 'password_repeat', 'city'], 'required',
-                'message' => 'Поле должно быть заполнено'],
+            [
+                ['name', 'email', 'password', 'password_repeat', 'city'],
+                'required',
+                'message' => 'Поле должно быть заполнено'
+            ],
             ['email', 'email', 'message' => 'Введите корректный Email'],
             ['email', 'unique', 'targetClass' => User::class, 'message' => 'Пользователь с таким email уже зарегистрирован'],
             [['password'], 'string', 'min' => 8, 'message' => 'Пароль должен быть не менее 8 символов'],
@@ -26,7 +29,8 @@ class SignupForm extends Model
         ];
     }
 
-    public function attributeLabels(): array {
+    public function attributeLabels(): array
+    {
         return [
             'name' => 'Ваше имя',
             'email' => 'Email',

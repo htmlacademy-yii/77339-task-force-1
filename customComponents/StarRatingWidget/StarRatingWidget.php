@@ -19,6 +19,7 @@ class StarRatingWidget extends Widget
         parent::init();
         $this->rating = min(max($this->rating, 0), self::MAX_RATING);
     }
+
     public function run()
     {
         $fullStars = floor($this->rating);

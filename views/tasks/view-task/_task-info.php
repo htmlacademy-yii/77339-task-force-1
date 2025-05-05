@@ -10,7 +10,7 @@ use yii\helpers\Html; ?>
         <dt>Категория</dt>
         <dd><?= Html::encode($task->category->name) ?></dd>
         <dt>Дата публикации</dt>
-        <dd><?= Yii::$app->formatter->asRelativeTime($task->created_at) ?></dd>
+        <dd><?= Yii::$app->formatter->asRelativeTime(strtotime($task->created_at)) ?></dd>
         <dt>Срок выполнения</dt>
         <dd><?= Yii::$app->formatter->asDatetime($task->ended_at) ?></dd>
         <dt>Статус</dt>

@@ -1,5 +1,7 @@
 <?php
+
 use yii\widgets\ListView;
+
 /** @var yii\data\ActiveDataProvider $dataProvider */
 ?>
 
@@ -11,4 +13,5 @@ use yii\widgets\ListView;
     'itemOptions' => ['class' => 'task-card'],
     'emptyText' => 'Нет заданий по выбранным критериям',
     'emptyTextOptions' => ['class' => 'empty-tasks']
-]) ?>
+]);
+?>
