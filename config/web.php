@@ -1,40 +1,34 @@
 <?php
 
-use app\interfaces\FilesUploadInterface;
-use app\interfaces\TaskValidatorInterface;
-use app\services\FileUploader;
-use app\services\TaskValidator;
-
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
+    'language' => 'ru-RU',
     'bootstrap' => ['log'],
+    'defaultRoute' => 'tasks/index',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm' => '@vendor/npm-asset',
+        '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
-        'formatter' => [
-            'class' => 'yii\i18n\Formatter',
-            'locale' => 'ru-RU',
-            'dateFormat' => 'php: d.m.Y',
-            'timeFormat' => 'php: H:i:s',
-            'datetimeFormat' => 'php: d.m.Y H:i:s',
+        'authManager' => [
+            'class' => 'yii\rbac\PhpManager',
         ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => 'v0lZHRxhb3helZ2OZp8at4wgBydAQntQ',
+            'cookieValidationKey' => '26lQBaA3QYLY27MyYpcujCPmS2KhHeuX',
+            'baseUrl' => '',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\models\Users',
             'enableAutoLogin' => true,
-            'loginUrl' => ['site/index'],
+            'loginUrl' => ['/login']
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -50,7 +44,7 @@ $config = [
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning', 'info', 'trace', 'profile'],
+                    'levels' => ['error', 'warning'],
                 ],
             ],
         ],
@@ -58,20 +52,24 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => false,
             'rules' => [
-                'tasks' => 'tasks/index',
-                'publish' => 'task-creation/create',
                 'tasks/view/<id:\d+>' => 'tasks/view',
-                'users/view/<id:\d+>' => 'users/view',
-                'signup' => 'signup/index',
-                'login' => 'auth/login',
-                'logout' => 'auth/logout',
+                'user/view/<id:\d+>' => 'user/view',
+                'tasks/category/<id:\d+>' => 'tasks/index',
             ],
         ],
-    ],
-    'container' => [
-        'singletons' => [
-            FilesUploadInterface::class => FileUploader::class,
+        'formatter' => [
+            'class' => '\app\components\FormatterHelper',
+            'dateFormat' => 'dd.MM.yyyy',
+            'locale' => 'ru-RU'
+        ],
+        'i18n' => [
+            'translations' => [
+                'app' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                ],
+            ],
         ],
     ],
     'params' => $params,

@@ -2,9 +2,6 @@
 
 use yii\db\Migration;
 
-/**
- * Handles adding columns to table `{{%reactions}}`.
- */
 class m230728_171447_add_status_column_to_reactions_table extends Migration
 {
     /**

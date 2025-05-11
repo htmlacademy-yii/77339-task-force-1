@@ -1,13 +1,15 @@
 <?php
 
 /** @var yii\web\View $this */
-
 /** @var string $content */
+/** @var array $user */
 
 use app\assets\AppAsset;
+use app\models\Users;
+use app\widgets\Alert;
+use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\helpers\Url;
-use yii\web\JqueryAsset;
 
 AppAsset::register($this);
 
@@ -18,87 +20,76 @@ $this->registerMetaTag(['name' => 'description', 'content' => $this->params['met
 $this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_keywords'] ?? '']);
 $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii::getAlias('@web/favicon.ico')]);
 
-$this->registerCssFile('@web/css/normalize.css');
-$this->registerCssFile('@web/css/style.css');
-$this->registerCssFile('@web/css/site.css');
+// на будущее
+//$isGuest = Yii::$app->user->isGuest;
 
-$this->registerJsFile('@web/js/main.js', ['depends' => [JqueryAsset::class]]);
+$isRegisterPage = Yii::$app->controller->id === 'registration';
+$user = Users::findIdentity(\Yii::$app->user->getId());
 ?>
-<?php
-$this->beginPage() ?>
+<?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
     <title><?= Html::encode($this->title) ?></title>
-    <?php
-    $this->head() ?>
+    <?php $this->head() ?>
 </head>
-<body class="landing">
-<?php
-$this->beginBody() ?>
 
-<div class="table-layout">
-    <header class="page-header">
-        <nav class="main-nav">
-            <a href='<?= Url::to('/tasks') ?>' class="header-logo">
-                <img class="logo-image" src="<?= Url::to('@web/img/logotype.png') ?>"
-                     width=227 height=60 alt="taskForce">
-            </a>
-            <?php
-            if (Yii::$app->controller->id !== 'signup') : ?>
-                <div class="nav-wrapper">
-                    <ul class="nav-list">
-                        <li class="list-item list-item--active">
-                            <a href='<?= Url::to('/publish') ?>' class="link link--nav">Новое</a>
-                        </li>
-                        <li class="list-item">
-                            <a href="#" class="link link--nav">Мои задания</a>
-                        </li>
-                        <li class="list-item">
-                            <a href="#" class="link link--nav">Создать задание</a>
-                        </li>
-                        <li class="list-item">
-                            <a href="#" class="link link--nav">Настройки</a>
-                        </li>
-                    </ul>
-                </div>
-            <?php
-            endif; ?>
-        </nav>
-        <?php
-        if (Yii::$app->controller->id !== 'signup') : ?>
-            <?php
-            $user = Yii::$app->user->identity; ?>
-            <div class="user-block">
-                <a href="#">
-                    <img class="user-photo" src="/img/<?= $user->avatar; ?>" width="55" height="55" alt="Аватар">
-                </a>
-                <div class="user-menu">
-                    <p class="user-name"><?= $user->name ?></p>
-                    <div class="popup-head">
-                        <ul class="popup-menu">
-                            <li class="menu-item">
-                                <a href="#" class="link">Настройки</a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="#" class="link">Связаться с нами</a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="<?= Url::toRoute(['auth/logout']); ?>" class="link">Выход из системы</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+<body>
+<?php $this->beginBody() ?>
+
+<header class="page-header">
+    <nav class="main-nav">
+        <a href='/' class="header-logo">
+            <img class="logo-image" src="/img/logotype.png" width=227 height=60 alt="taskforce">
+        </a>
+        <div class="nav-wrapper">
+            <ul class="nav-list">
+                <li class="list-item list-item--active">
+                    <a class="link link--nav" >Новое</a>
+                </li>
+                <li class="list-item">
+                    <a href="#" class="link link--nav" >Мои задания</a>
+                </li>
+                <?php if (Yii::$app->user->can('client')): ?>
+                    <li class="list-item">
+                        <a href="<?= Url::to(['/add-task']); ?>" class="link link--nav" >Создать задание</a>
+                    </li>
+                <?php endif; ?>
+                <li class="list-item">
+                    <a href="#" class="link link--nav" >Настройки</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <?php if(!$isRegisterPage): ?>
+        <div class="user-block">
+        <a href="#">
+            <img class="user-photo" src="<?= $user->avatar->file_path; ?>" width="55" height="55" alt="<?= $user->full_name; ?>">
+        </a>
+        <div class="user-menu">
+            <p class="user-name"><?= $user->full_name; ?></p>
+            <div class="popup-head">
+                <ul class="popup-menu">
+                    <li class="menu-item">
+                        <a href="#" class="link">Настройки</a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="link">Связаться с нами</a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="<?= Url::to(['tasks/logout']) ?>" class="link">Выход из системы</a>
+                    </li>
+
+                </ul>
             </div>
-        <?php
-        endif; ?>
-    </header>
-    <?= $content ?>
-</div>
+        </div>
+    </div>
+    <?php endif; ?>
+</header>
 
-<?php
-$this->endBody() ?>
+<?= $content ?>
+
+<?php $this->endBody() ?>
 </body>
 </html>
-<?php
-$this->endPage() ?>
+<?php $this->endPage() ?>

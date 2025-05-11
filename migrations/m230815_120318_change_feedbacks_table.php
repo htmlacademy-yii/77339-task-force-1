@@ -2,9 +2,6 @@
 
 use yii\db\Migration;
 
-/**
- * Class m230815_120318_change_feedbacks_table
- */
 class m230815_120318_change_feedbacks_table extends Migration
 {
     /**

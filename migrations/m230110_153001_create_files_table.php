@@ -2,9 +2,6 @@
 
 use yii\db\Migration;
 
-/**
- * Handles the creation of table `{{%files}}`.
- */
 class m230110_153001_create_files_table extends Migration
 {
     /**

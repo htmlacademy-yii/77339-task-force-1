@@ -20,6 +20,9 @@ use Taskforce\Service\Task\TaskStatuses;
  * @property int $client_id
  * @property int $worker_id
  * @property int $city_id
+ * @property string $location
+ * @property string $latitude
+ * @property string $longitude
  *
  * @property Categories $category
  * @property Cities $city
@@ -47,7 +50,7 @@ class Tasks extends \yii\db\ActiveRecord
         return [
             [['title', 'description', 'published_at', 'price', 'category_id', 'client_id', 'worker_id', 'city_id'], 'required'],
             [['price', 'category_id', 'client_id', 'worker_id', 'city_id'], 'integer'],
-            [['expired_at'], 'safe'],
+            [['expired_at', 'location', 'latitude', 'longitude'], 'safe'],
             [['title', 'current_status'], 'string', 'max' => 255],
             [['description'], 'string'],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::class, 'targetAttribute' => ['city_id' => 'id']],

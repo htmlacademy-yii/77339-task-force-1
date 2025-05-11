@@ -2,9 +2,6 @@
 
 use yii\db\Migration;
 
-/**
- * Handles the creation of table `{{%user_categories}}`.
- */
 class m230227_170512_create_user_categories_table extends Migration
 {
     /**

@@ -10,6 +10,11 @@ use yii\jui\DatePicker;
 /** @var array $categories */
 /** @var AddTaskForm $model */
 
+$this->registerCssFile('https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.02.min.css');
+
+$this->registerJsFile('https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js');
+$this->registerJsFile('@web/js/autocomplit.js');
+
 $this->title = 'Публикация нового задания';
 ?>
 <main class="main-content main-content--center container">
@@ -30,6 +35,8 @@ $this->title = 'Публикация нового задания';
             <?= $form->field($model, 'description')->textarea() ?>
             <?= $form->field($model, 'category_id')->dropDownList($categories); ?>
             <?= $form->field($model, 'location')->textInput(['class' => 'location-icon']) ?>
+            <?= $form->field($model, 'latitude', ['template' => "{input}"])->hiddenInput() ?>
+            <?= $form->field($model, 'longitude', ['template' => "{input}"])->hiddenInput() ?>
             <div class="half-wrapper">
                 <?= $form->field($model, 'price')->textInput(['class' => 'budget-icon']) ?>
                 <?= $form->field($model, 'expired_at')->widget(DatePicker::classname(), [

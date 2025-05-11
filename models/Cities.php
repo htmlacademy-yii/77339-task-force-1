@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Taskforce\Service\Api\Geocoder;
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -75,5 +76,33 @@ class Cities extends \yii\db\ActiveRecord
         $cities = self::find()->asArray()->all();
 
         return ArrayHelper::map($cities, 'id', 'name');
+    }
+
+    public static function findCityIdByName(string $cityName): ?int
+    {
+        $city = self::find()->where(['name' => $cityName])->one();
+
+        if (!empty($city)) {
+            return $city->id;
+        }
+
+        $api = new Geocoder();
+        $city = $api->getCoordinates($cityName, 1)[0];
+
+        if (empty($city)) {
+            return null;
+        }
+
+        $newCity = new self();
+        $newCity->name = $city['city'];
+        $newCity->latitude = $city['latitude'];
+        $newCity->longitude = $city['longitude'];
+        $result = $newCity->save();
+
+        if ($result) {
+            return $newCity->id;
+        }
+
+        return null;
     }
 }

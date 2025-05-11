@@ -2,9 +2,6 @@
 
 use yii\db\Migration;
 
-/**
- * Handles the creation of table `{{%cities}}`.
- */
 class m230110_151631_create_cities_table extends Migration
 {
     /**

@@ -2,9 +2,6 @@
 
 use yii\db\Migration;
 
-/**
- * Handles the creation of table `{{%reactions}}`.
- */
 class m230112_163751_create_reactions_table extends Migration
 {
     /**

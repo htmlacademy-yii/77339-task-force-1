@@ -32,9 +32,11 @@ $this->title = 'Taskforce';
             <p class="task-text"><?= $task->description; ?>
             </p>
             <div class="footer-task">
-                <p class="info-text town-text"><?= $task->city->name; ?></p>
+                <?php if(!empty($task->city)): ?>
+                    <p class="info-text town-text"><?= $task->city->name; ?></p>
+                <?php endif; ?>
                 <p class="info-text category-text"><?= $task->category->name; ?></p>
-                <a href="#" class="button button--black">Смотреть Задание</a>
+                <a href="<?= Url::to(['tasks/view', 'id' => $task->id]); ?>" class="button button--black">Смотреть Задание</a>
             </div>
         </div>
         <?php endforeach; ?>

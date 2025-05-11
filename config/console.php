@@ -1,7 +1,5 @@
 <?php
 
-use Psy\Shell;
-
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -16,6 +14,9 @@ $config = [
         '@tests' => '@app/tests',
     ],
     'components' => [
+        'authManager' => [
+            'class' => 'yii\rbac\PhpManager',
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
@@ -31,23 +32,16 @@ $config = [
     ],
     'params' => $params,
     'controllerMap' => [
-        'seed' => 'app\commands\SeedController',
         'fixture' => [ // Fixture generation command line.
             'class' => 'yii\faker\FixtureController',
-            'templatePath' => '@common/fixtures/templates',
-            'fixtureDataPath' => '@common/fixtures/data',
-            'namespace' => 'common\fixtures',
-        ],
-        'shell' => [
-            'class' => 'yii\console\Controller',
-            'action' => function() {
-                Shell::debug();
-            }
+            'templatePath' => '@app/fixtures/templates',
+            'fixtureDataPath' => '@app/fixtures/data',
+            'namespace' => 'app\fixtures',
         ],
     ],
 ];
 
-if (defined('YII_ENV_DEV') && YII_ENV_DEV) {
+if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
