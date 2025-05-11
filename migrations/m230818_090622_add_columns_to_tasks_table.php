@@ -2,6 +2,9 @@
 
 use yii\db\Migration;
 
+/**
+ * Handles adding columns to table `{{%tasks}}`.
+ */
 class m230818_090622_add_columns_to_tasks_table extends Migration
 {
     /**

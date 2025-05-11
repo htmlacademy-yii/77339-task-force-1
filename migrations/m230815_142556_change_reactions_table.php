@@ -2,6 +2,9 @@
 
 use yii\db\Migration;
 
+/**
+ * Class m230815_142556_change_reactions_table
+ */
 class m230815_142556_change_reactions_table extends Migration
 {
     /**

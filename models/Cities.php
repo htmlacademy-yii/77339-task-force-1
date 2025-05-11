@@ -78,7 +78,7 @@ class Cities extends \yii\db\ActiveRecord
         return ArrayHelper::map($cities, 'id', 'name');
     }
 
-    public static function findCityIdByName(string $cityName): ?int
+    public static function refineCityIdByName(string $cityName): ?int
     {
         $city = self::find()->where(['name' => $cityName])->one();
 
@@ -95,6 +95,27 @@ class Cities extends \yii\db\ActiveRecord
 
         $newCity = new self();
         $newCity->name = $city['city'];
+        $newCity->latitude = $city['latitude'];
+        $newCity->longitude = $city['longitude'];
+        $result = $newCity->save();
+
+        if ($result) {
+            return $newCity->id;
+        }
+
+        return null;
+    }
+
+    public static function findCityIdByName(array $city): ?int
+    {
+        $result = self::find()->where(['name' => $city['name']])->one();
+
+        if (!empty($result)) {
+            return $result->id;
+        }
+
+        $newCity = new self();
+        $newCity->name = $city['name'];
         $newCity->latitude = $city['latitude'];
         $newCity->longitude = $city['longitude'];
         $result = $newCity->save();

@@ -10,6 +10,11 @@ use yii\helpers\Html;
 /** @var array $cities */
 
 $this->title = 'Taskforce';
+
+$this->registerCssFile('https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.02.min.css');
+
+$this->registerJsFile('https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js');
+$this->registerJsFile('@web/js/autocomplit.js');
 ?>
 
 <main class="container container--registration">
@@ -30,8 +35,14 @@ $this->title = 'Taskforce';
                 <?= $form->field($model, 'full_name'); ?>
                 <div class="half-wrapper">
                     <?= $form->field($model, 'email')->input('email'); ?>
-                    <?= $form->field($model, 'city_id')->dropDownList($cities); ?>
+                    <?= $form->field($model, 'location', [
+                        'inputOptions' => [
+                            'id' => 'location',
+                            'class' => 'location'
+                        ]]); ?>
                 </div>
+                <?= $form->field($model, 'latitude', ['template' => "{input}"])->hiddenInput(['id' => 'latitude']) ?>
+                <?= $form->field($model, 'longitude', ['template' => "{input}"])->hiddenInput(['id' => 'longitude']) ?>
                 <div class="half-wrapper">
                     <?= $form->field($model, 'password')->passwordInput(); ?>
                 </div>

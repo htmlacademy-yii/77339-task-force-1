@@ -8,9 +8,9 @@ use yii\helpers\Url;
 $this->registerCsrfMetaTags();
 $this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
 
-$this->registerCssFile('css/normalize.css');
-$this->registerCssFile('css/landing.css');
-$this->registerJsFile('js/landing.js');
+$this->registerCssFile('/css/normalize.css');
+$this->registerCssFile('/css/landing.css');
+$this->registerJsFile('/js/landing.js');
 $this->title = 'TaskForce';
 ?>
 <?php $this->beginPage() ?>
@@ -65,6 +65,13 @@ $this->title = 'TaskForce';
         </div>
     </header>
     <main>
+        <?php if (!empty(Yii::$app->session->getAllFlashes())): ?>
+            <?php foreach (Yii::$app->session->getAllFlashes() as $key => $message): ?>
+                <div class="alert alert-<?= $key; ?>">
+                    <?= $message; ?>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
         <div class="landing-container">
             <div class="landing-top">
                 <h1>Работа для всех.<br>
@@ -72,7 +79,7 @@ $this->title = 'TaskForce';
                 <p>Сломался кран на кухне? Надо отправить документы? Нет времени самому гулять с собакой?
                     У нас вы быстро найдёте исполнителя для любой жизненной ситуации?<br>
                     Быстро, безопасно и с гарантией. Просто, как раз, два, три. </p>
-                <button class="button">Создать аккаунт</button>
+                <a href="<?= Url::to(['/registration']) ?>" class="button">Создать аккаунт</a>
             </div>
             <div class="landing-center">
                 <div class="landing-instruction">
@@ -180,7 +187,7 @@ $this->title = 'TaskForce';
                         <a href="">Исполнители</a>
                     </li>
                     <li class="links__item">
-                        <a href="">Регистрация</a>
+                        <a href="<?= Url::to(['/registration']) ?>">Регистрация</a>
                     </li>
                     <li class="links__item">
                         <a href="">Создать задание</a>

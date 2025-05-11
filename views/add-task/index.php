@@ -34,9 +34,12 @@ $this->title = 'Публикация нового задания';
             <?= $form->field($model, 'title') ?>
             <?= $form->field($model, 'description')->textarea() ?>
             <?= $form->field($model, 'category_id')->dropDownList($categories); ?>
-            <?= $form->field($model, 'location')->textInput(['class' => 'location-icon']) ?>
-            <?= $form->field($model, 'latitude', ['template' => "{input}"])->hiddenInput() ?>
-            <?= $form->field($model, 'longitude', ['template' => "{input}"])->hiddenInput() ?>
+            <?= $form->field($model, 'location')->textInput([
+                    'id' => 'location',
+                    'class' => 'location-icon'
+            ]) ?>
+            <?= $form->field($model, 'latitude', ['template' => "{input}"])->hiddenInput(['id' => 'latitude']) ?>
+            <?= $form->field($model, 'longitude', ['template' => "{input}"])->hiddenInput(['id' => 'longitude']) ?>
             <div class="half-wrapper">
                 <?= $form->field($model, 'price')->textInput(['class' => 'budget-icon']) ?>
                 <?= $form->field($model, 'expired_at')->widget(DatePicker::classname(), [

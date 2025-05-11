@@ -55,7 +55,7 @@ class Users extends ActiveRecord implements IdentityInterface
         $scenarios = parent::scenarios();
 
         $scenarios[self::SCENARIO_LOGIN] = ['email', 'password'];
-        $scenarios[self::SCENARIO_REGISTER] = ['full_name', 'email', 'password', 'city_id', '!password_repeat', '!is_worker'];
+        $scenarios[self::SCENARIO_REGISTER] = ['full_name', 'email', 'password', '!password_repeat', '!is_worker'];
 
         return $scenarios;
     }

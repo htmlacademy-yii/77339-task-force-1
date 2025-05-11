@@ -85,7 +85,7 @@ class AddTaskForm extends Model
             $location = explode(',', $this->location);
             $cityName = $location[0];
 
-            $cityId = Cities::findCityIdByName($cityName);
+            $cityId = Cities::refineCityIdByName($cityName);
 
             if (empty($cityId)) {
                 $task->location = $this->location;
