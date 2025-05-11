@@ -1,6 +1,7 @@
 var openModalLinks = document.getElementsByClassName("open-modal");
 var closeModalLinks = document.getElementsByClassName("form-modal-close");
 var overlay = document.getElementsByClassName("overlay")[0];
+const authForm = document.getElementById('auth-form-section');
 
 for (var i = 0; i < openModalLinks.length; i++) {
   var modalLink = openModalLinks[i];
@@ -20,10 +21,21 @@ function closeModal(event) {
 
   modal.removeAttribute("style");
   overlay.removeAttribute("style");
+
+  if (authForm) {
+    location.href = '/login';
+  }
 }
 
 for (var j = 0; j < closeModalLinks.length; j++) {
   var closeModalLink = closeModalLinks[j];
 
   closeModalLink.addEventListener("click", closeModal)
+}
+
+if (authForm) {
+  setTimeout(() => {
+    authForm.style.display = 'block';
+    overlay.style.display = 'block';
+  }, 300);
 }

@@ -1,13 +1,13 @@
 window.onload = function () {
     let config = {
-        selector: "#addtaskform-location",
+        selector: "#location",
         searchEngine: 'loose',
         placeHolder: "Search for Location...",
         data: {
             src:  async (query) => {
                 try {
                     // Fetch Data from external Source
-                    const source = await fetch('add-task/get-location?' + new URLSearchParams({
+                    const source = await fetch('/location/get?' + new URLSearchParams({
                         query: `${query}`,
                     }), {
                         headers: {
@@ -64,6 +64,6 @@ window.onload = function () {
     };
 
     const autoCompleteJS = new autoComplete(config);
-    const latitude = document.getElementById('addtaskform-latitude');
-    const longitude = document.getElementById('addtaskform-longitude');
+    const latitude = document.getElementById('latitude');
+    const longitude = document.getElementById('longitude');
 }

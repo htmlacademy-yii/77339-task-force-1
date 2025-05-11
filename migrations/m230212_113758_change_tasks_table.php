@@ -2,6 +2,9 @@
 
 use yii\db\Migration;
 
+/**
+ * Class m230212_113758_change_tasks_table
+ */
 class m230212_113758_change_tasks_table extends Migration
 {
     /**

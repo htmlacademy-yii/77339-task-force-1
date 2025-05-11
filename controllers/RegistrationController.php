@@ -7,6 +7,8 @@ use Yii;
 use app\models\Cities;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 class RegistrationController extends Controller
 {
@@ -38,6 +40,12 @@ class RegistrationController extends Controller
 
 //            Загрузим в модель все данные из POST
             $model->load(Yii::$app->request->post());
+
+            if (Yii::$app->request->isAjax) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+
+                return ActiveForm::validate($model);
+            }
 
             if ($model->register()) {
                 $this->goHome();

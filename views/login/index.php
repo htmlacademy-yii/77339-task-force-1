@@ -10,6 +10,13 @@ use yii\helpers\Html;
 
 <section class="modal enter-form form-modal" id="enter-form">
     <h2>Вход на сайт</h2>
+    <div class="social">
+        <h3>Авторизация через соцсети</h3>
+        <?= yii\authclient\widgets\AuthChoice::widget([
+            'baseAuthUrl' => ['login/auth'],
+            'popupMode' => false,
+        ]) ?>
+    </div>
     <?php $form = ActiveForm::begin([
             'id' => 'login-form',
             'enableAjaxValidation' => true,

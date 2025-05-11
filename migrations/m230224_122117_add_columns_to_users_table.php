@@ -2,6 +2,9 @@
 
 use yii\db\Migration;
 
+/**
+ * Handles adding columns to table `{{%users}}`.
+ */
 class m230224_122117_add_columns_to_users_table extends Migration
 {
     /**

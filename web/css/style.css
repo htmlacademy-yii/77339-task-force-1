@@ -1298,8 +1298,11 @@ input[type=date] {
 
 .registration-form {
   padding-bottom: 122px; }
-  .registration-form .half-wrapper input, .registration-form .half-wrapper select {
-    width: 295px; }
+  .registration-form .half-wrapper input,
+  .registration-form .half-wrapper select {
+    width: 295px;
+    height: auto;
+  }
 
 .registration-form input {
   width: 642px; }
@@ -1612,5 +1615,4 @@ form .has-error textarea:hover {
 
 .pop-up--open {
   display: block; }
-
 /*# sourceMappingURL=style.css.map */
