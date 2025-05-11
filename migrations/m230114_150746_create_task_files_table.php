@@ -2,9 +2,6 @@
 
 use yii\db\Migration;
 
-/**
- * Handles the creation of table `{{%task_files}}`.
- */
 class m230114_150746_create_task_files_table extends Migration
 {
     /**

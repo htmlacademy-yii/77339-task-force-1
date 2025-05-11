@@ -12,6 +12,7 @@ use app\models\AddTaskForm;
 use Yii;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
+use Taskforce\Service\Api\Geocoder;
 
 class AddTaskController extends BaseAuthController
 {
@@ -33,10 +34,8 @@ class AddTaskController extends BaseAuthController
 
         $categories = Categories::getAllCategoriesNames();
 
-        //        Убедимся, что форма была отправлена
         if (Yii::$app->request->getIsPost()) {
 
-        //            Загрузим в модель все данные из POST
             $model->load(Yii::$app->request->post());
             $model->files = UploadedFile::getInstances($model, 'files');
 
@@ -47,5 +46,20 @@ class AddTaskController extends BaseAuthController
         }
 
         return $this->render('index', compact('model', 'categories'));
+    }
+
+    public function actionGetLocation()
+    {
+        if (Yii::$app->request->isAjax) {
+            $request = Yii::$app->request;
+            $query = $request->get('query');
+
+            $api = new Geocoder();
+            $response = $api->getCoordinates($query);
+
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+            return $response;
+        }
     }
 }

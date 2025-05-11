@@ -2,9 +2,6 @@
 
 use yii\db\Migration;
 
-/**
- * Handles adding columns to table `{{%feedbacks}}`.
- */
 class m230225_141750_add_columns_to_feedbacks_table extends Migration
 {
     /**

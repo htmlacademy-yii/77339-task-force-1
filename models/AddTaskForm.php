@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use Taskforce\Main\TaskStatuses;
+use Taskforce\Service\Task\TaskStatuses;
 use yii\base\Model;
 use app\models\Files;
 use app\models\Tasks;
@@ -15,6 +15,8 @@ class AddTaskForm extends Model
     public $category_id;
     public $price;
     public $location;
+    public $latitude;
+    public $longitude;
     public $expired_at;
     public $files;
 
@@ -44,6 +46,7 @@ class AddTaskForm extends Model
             [['price'], 'integer', 'min' => 1],
             ['expired_at', 'date', 'format' => 'php:Y-m-d'],
             [['files'], 'file', 'maxFiles' => 4],
+            [['location', 'latitude', 'longitude'], 'safe'],
         ];
     }
 
@@ -77,6 +80,22 @@ class AddTaskForm extends Model
 
         $task = new Tasks();
         $task->attributes = $this->attributes;
+
+        if (!empty($this->location)) {
+            $location = explode(',', $this->location);
+            $cityName = $location[0];
+
+            $cityId = Cities::findCityIdByName($cityName);
+
+            if (empty($cityId)) {
+                $task->location = $this->location;
+            } else {
+                $task->city_id = $cityId;
+                array_shift($location);
+                $task->location = implode(',', $location);
+            }
+        }
+
         $task->client_id = \Yii::$app->user->identity->id;
 
         $task->published_at = (new \DateTime('now', new \DateTimeZone('Europe/Moscow')))->format('Y-m-d H:i:s');

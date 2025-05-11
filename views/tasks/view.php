@@ -6,12 +6,23 @@
 /** @var array $files */
 /** @var bool $displayReactions */
 /** @var array $actionsToDisplay */
+/** @var array $taskMap */
 
 use yii\helpers\Html;
 use yii\helpers\Url;
 use \app\components\RatingStarsWidget;
 
 $this->registerJsFile('@web/js/main.js');
+
+if(
+    !empty($taskMap['latitude'])
+    && !empty($taskMap['longitude'])
+) {
+    $apiKey = Yii::$app->params['apiKeyGeocoder'];
+    $this->registerJsFile("https://api-maps.yandex.ru/2.1/?apikey={$apiKey}&lang=ru_RU");
+    $this->registerJsFile('@web/js/map.js');
+}
+
 $this->title = 'Taskforce';
 ?>
 
@@ -34,11 +45,21 @@ $this->title = 'Taskforce';
                 </a>
             <?php endforeach; ?>
         <?php endif; ?>
-        <div class="task-map">
-            <?= Html::img('@web/img/map.png', ['width' => '725', 'height' => '346','alt' => 'Новый арбат, 23, к. 1', 'class' => 'map']) ?>
-            <p class="map-address town">Москва</p>
-            <p class="map-address">Новый арбат, 23, к. 1</p>
-        </div>
+
+        <?php if(
+            !empty($taskMap['latitude'])
+            && !empty($taskMap['longitude'])
+        ): ?>
+            <div class="task-map">
+                <?= Html::hiddenInput('latitude', $taskMap['latitude'], ['id' => 'latitude']) ?>
+                <?= Html::hiddenInput('longitude', $taskMap['longitude'], ['id' => 'longitude']) ?>
+                <div id="map" class="map"></div>
+                <?php if(!empty($task->city->id)): ?>
+                    <p class="map-address town"><?= $task->city->name; ?></p>
+                <?php endif; ?>
+                <p class="map-address"><?= $task->location; ?></p>
+            </div>
+        <?php endif; ?>
 
         <?php if($displayReactions && !empty($reactions)): ?>
             <h4 class="head-regular">Отклики на задание</h4>

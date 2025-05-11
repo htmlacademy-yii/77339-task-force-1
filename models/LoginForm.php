@@ -2,11 +2,15 @@
 
 namespace app\models;
 
+use app\models\Users;
+use Yii;
 use yii\base\Model;
 
 /**
+ * LoginForm is the model behind the login form.
  *
- * @property-read User|null $user
+ * @property-read Users|null $user
+ *
  */
 class LoginForm extends Model
 {
@@ -15,38 +19,57 @@ class LoginForm extends Model
 
     private $_user;
 
-    public function rules(): array
+    public function attributeLabels()
     {
         return [
-            [['email', 'password'], 'required'],
-            [['email', 'password'], 'safe'],
-            ['password', 'validatePassword'],
-        ];
-    }
-
-    public function attributeLabels(): array
-    {
-        return [
-            'email' => 'Email',
             'password' => 'Пароль',
         ];
     }
 
-    public function validatePassword($attribute): void
+
+    /**
+     * @return array the validation rules.
+     */
+    public function rules()
+    {
+        return [
+            [['email', 'password'], 'required'],
+            [['email', 'password'], 'safe'],
+            [['email'], 'email'],
+            // password is validated by validatePassword()
+            ['password', 'validatePassword'],
+        ];
+    }
+
+    /**
+     * Validates the password.
+     * This method serves as the inline validation for password.
+     *
+     * @param string $attribute the attribute currently being validated
+     * @param array $params the additional name-value pairs given in the rule
+     */
+    public function validatePassword($attribute, $params)
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Неверный email или пароль.');
+
+            if (!$user || !\Yii::$app->security->validatePassword($this->password, $user->password)) {
+                $this->addError($attribute, 'Неправильный email или пароль ' . $attribute);
             }
         }
     }
 
-    public function getUser(): ?User
+    /**
+     * Finds user by [[username]]
+     *
+     * @return Users|null
+     */
+    public function getUser()
     {
         if ($this->_user === null) {
-            $this->_user = User::findByEmail($this->email);
+            $this->_user = Users::findByEmail($this->email);
         }
+
         return $this->_user;
     }
 }

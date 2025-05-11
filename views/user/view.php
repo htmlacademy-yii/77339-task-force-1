@@ -4,7 +4,7 @@ use yii\helpers\Url;
 use \app\components\RatingStarsWidget;
 
 /** @var yii\web\View $this */
-/** @var array $user */
+/** @var object $user */
 /** @var array $userData */
 
 $this->title = 'Taskforce';
