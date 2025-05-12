@@ -47,8 +47,16 @@ class Geocoder
             $responseData = json_decode($content, true);
             $locationCollection = ArrayHelper::getValue($responseData, self::LOCATION_KEY);
 
+            if (empty($locationCollection)) {
+                return null;
+            }
+
             foreach ($locationCollection as $locationObject) {
                 $coordinates = explode(' ', ArrayHelper::getValue($locationObject, self::LOCATION_COORDINATES_KEY));
+                if (count($coordinates) !== 2) {
+                    continue;
+                }
+                
                 $city = ArrayHelper::getValue($locationObject, self::LOCATION_CITY_KEY);
                 $location = ArrayHelper::getValue($locationObject, self::LOCATION_ADDRESS_KEY);
 
@@ -64,11 +72,11 @@ class Geocoder
                 ];
             }
 
-        } catch (RequestException $e) {
-            echo Psr7\Message::toString($e->getRequest()) . '<br>';
-            echo Psr7\Message::toString($e->getResponse()) . '<br>';
-        }
+            return empty($result) ? null : $result;
 
-        return $result;
+        } catch (RequestException $e) {
+            Yii::error('Geocoder API error: ' . $e->getMessage());
+            return null;
+        }
     }
 }

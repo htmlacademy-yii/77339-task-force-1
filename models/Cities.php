@@ -89,12 +89,14 @@ class Cities extends \yii\db\ActiveRecord
         $api = new Geocoder();
         $cities = $api->getCoordinates($cityName, 1);
 
-        if (empty($cities) || !isset($cities[0])) {
+        if ($cities === null || empty($cities) || !isset($cities[0])) {
+            Yii::error('Failed to get coordinates for city: ' . $cityName);
             return null;
         }
 
         $city = $cities[0];
         if (empty($city['city']) || empty($city['latitude']) || empty($city['longitude'])) {
+            Yii::error('Invalid city data received from geocoder: ' . json_encode($city));
             return null;
         }
 
@@ -108,6 +110,7 @@ class Cities extends \yii\db\ActiveRecord
             return $newCity->id;
         }
 
+        Yii::error('Failed to save new city: ' . json_encode($newCity->errors));
         return null;
     }
 
