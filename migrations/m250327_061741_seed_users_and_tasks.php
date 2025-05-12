@@ -62,7 +62,7 @@ class m250327_061741_seed_users_and_tasks extends Migration
         for ($i = 0; $i < 50; $i++) {
             $city = $faker->optional(0.7)->randomElement($cities);
             $status = $faker->randomElement(['new', 'in_progress', 'completed', 'failed', 'canceled']);
-            $executorId = in_array($status, ['in_progress', 'completed', 'failed']);
+            $executorId = in_array($status, ['in_progress', 'completed', 'failed']) ? $faker->randomElement($usersIds) : null;
             $tasks[] = [
                 'title' => $faker->sentence(3),
                 'description' => $faker->paragraph(3),
