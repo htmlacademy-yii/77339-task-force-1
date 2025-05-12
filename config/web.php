@@ -16,17 +16,6 @@ $config = [
         'authManager' => [
             'class' => 'yii\rbac\PhpManager',
         ],
-        'authClientCollection' => [
-            'class' => 'yii\authclient\Collection',
-            'clients' => [
-                'vkontakte' => [
-                    'class' => 'yii\authclient\clients\VKontakte',
-                    'clientId' => $params['vkClientId'],
-                    'clientSecret' => $params['vkClientSecret'],
-                    'scope' => 'email'
-                ],
-            ],
-        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '26lQBaA3QYLY27MyYpcujCPmS2KhHeuX',

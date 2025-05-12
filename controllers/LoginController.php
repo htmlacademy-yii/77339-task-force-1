@@ -12,7 +12,6 @@ use app\models\LoginForm;
 use yii\widgets\ActiveForm;
 use yii\web\Response;
 use yii\filters\AccessControl;
-use yii\authclient\clients\VKontakte;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
