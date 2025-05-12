@@ -1,11 +1,9 @@
 <?php
-$secretKeys = parse_ini_file(__DIR__ . '/app-config.ini');
 
 return [
-    'adminEmail' => 'admin@example.com',
-    'senderEmail' => 'noreply@example.com',
-    'senderName' => 'Example.com mailer',
-    'apiKeyGeocoder' => $secretKeys['apiKeyGeocoder'],
-    'vkClientId' => $secretKeys['vkClientId'],
-    'vkClientSecret' => $secretKeys['vkClientSecret'],
+    'dbDsn' => $_ENV['DB_DSN'] ?? '',
+    'dbUsername' => $_ENV['DB_USERNAME'] ?? '',
+    'dbPassword' => $_ENV['DB_PASSWORD'] ?? '',
+    'dbCharset' => $_ENV['DB_CHARSET'] ?? 'utf8mb4',
+    'apiKeyGeocoder' => $_ENV['API_KEY_GEOCODER'] ?? '',
 ];
