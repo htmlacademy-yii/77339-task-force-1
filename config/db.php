@@ -1,11 +1,9 @@
 <?php
 
-$params = require __DIR__ . '/params.php';
-
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => $params['dbDsn'],
-    'username' => $params['dbUsername'],
-    'password' => $params['dbPassword'],
-    'charset' => $params['dbCharset'],
+    'dsn' => 'mysql:host=127.0.0.1:3306;dbname=task_force_anton',
+    'username' => 'root',
+    'password' => 'root',
+    'charset' => 'utf8mb4',
 ];
