@@ -87,9 +87,14 @@ class Cities extends \yii\db\ActiveRecord
         }
 
         $api = new Geocoder();
-        $city = $api->getCoordinates($cityName, 1)[0];
+        $cities = $api->getCoordinates($cityName, 1);
 
-        if (empty($city)) {
+        if (empty($cities) || !isset($cities[0])) {
+            return null;
+        }
+
+        $city = $cities[0];
+        if (empty($city['city']) || empty($city['latitude']) || empty($city['longitude'])) {
             return null;
         }
 
