@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m230226_154351_cities_from_csv extends Migration
+class m250326_211901_seed_from_csv extends Migration
 {
     /**
      * @throws Exception
@@ -27,21 +27,24 @@ class m230226_154351_cities_from_csv extends Migration
         $csvFile = Yii::getAlias('@app/data/categories.csv');
 
         if (($handle = fopen($csvFile, "r")) !== FALSE) {
+            // Пропускаем заголовок
             fgetcsv($handle, 1000, ",", '"', "\\");
 
             $batch = [];
             while (($data = fgetcsv($handle, 1000, ",", '"', "\\")) !== FALSE) {
                 $batch[] = [
-                    'name' => $data[0],
-                    'icon' => $data[1] ?? null,
+                    'name' => $data[0], // Название категории
+                    'icon' => $data[1] ?? null, // Иконка (если есть)
                 ];
 
+                // Вставляем пачками по 100 записей
                 if (count($batch) >= 100) {
                     $this->batchInsert('{{%categories}}', ['name', 'icon'], $batch);
                     $batch = [];
                 }
             }
 
+            // Вставляем оставшиеся записи
             if (!empty($batch)) {
                 $this->batchInsert('{{%categories}}', ['name', 'icon'], $batch);
             }
@@ -53,11 +56,15 @@ class m230226_154351_cities_from_csv extends Migration
         }
     }
 
+    /**
+     * @throws Exception
+     */
     private function seedCities(): void
     {
         $csvFile = Yii::getAlias('@app/data/cities.csv');
 
         if (($handle = fopen($csvFile, "r")) !== FALSE) {
+            // Пропускаем заголовок
             fgetcsv($handle, 1000, ",", '"', "\\");
 
             $batch = [];
@@ -68,12 +75,14 @@ class m230226_154351_cities_from_csv extends Migration
                     'longitude' => $data[2] ?? null,
                 ];
 
+                // Вставляем пачками по 100 записей
                 if (count($batch) >= 100) {
                     $this->batchInsert('{{%cities}}', ['name', 'latitude', 'longitude'], $batch);
                     $batch = [];
                 }
             }
 
+            // Вставляем оставшиеся записи
             if (!empty($batch)) {
                 $this->batchInsert('{{%cities}}', ['name', 'latitude', 'longitude'], $batch);
             }
