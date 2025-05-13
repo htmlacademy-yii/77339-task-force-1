@@ -1,5 +1,4 @@
 <?php
-$params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
@@ -15,17 +14,6 @@ $config = [
     'components' => [
         'authManager' => [
             'class' => 'yii\rbac\PhpManager',
-        ],
-        'authClientCollection' => [
-            'class' => 'yii\authclient\Collection',
-            'clients' => [
-                'vkontakte' => [
-                    'class' => 'yii\authclient\clients\VKontakte',
-                    'clientId' => $params['vkClientId'],
-                    'clientSecret' => $params['vkClientSecret'],
-                    'scope' => 'email'
-                ],
-            ],
         ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -82,7 +70,7 @@ $config = [
             ],
         ],
     ],
-    'params' => $params,
+    'params' => require __DIR__ . '/params.php',
 ];
 
 if (YII_ENV_DEV) {
