@@ -9,6 +9,7 @@ use yii\web\Response;
 
 class SiteController extends SecuredController
 {
+
     /**
      * @return array
      */

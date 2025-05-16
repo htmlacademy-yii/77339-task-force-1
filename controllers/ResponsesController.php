@@ -8,8 +8,10 @@ use yii\db\Exception;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
+
 final class ResponsesController extends Controller
 {
+
     /**
      * @return array
      */

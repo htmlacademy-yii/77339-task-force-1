@@ -55,6 +55,7 @@ final class AccountSettingsController extends SecuredController
     /**
      * @return array
      */
+
     public function actionSecurity()
     {
         $user = Yii::$app->user->identity;

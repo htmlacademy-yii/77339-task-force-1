@@ -14,6 +14,7 @@ use yii\web\Response;
 
 final class TaskCompletionController extends Controller
 {
+
     /**
      * @return array
      */

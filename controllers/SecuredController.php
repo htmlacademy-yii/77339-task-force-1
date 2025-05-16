@@ -7,6 +7,7 @@ use yii\web\Controller;
 
 class SecuredController extends Controller
 {
+
     /**
      * @return array
      */

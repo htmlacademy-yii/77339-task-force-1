@@ -14,6 +14,7 @@ use yii\web\Response;
 
 final class TaskRefusalController extends Controller
 {
+
     /**
      * @return array
      */

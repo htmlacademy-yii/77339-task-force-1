@@ -5,8 +5,7 @@ namespace app\models;
 use yii\base\Model;
 
 /**
- *
- * @property-read User|null $user
+ * @property-read User|null
  */
 class LoginForm extends Model
 {
@@ -39,8 +38,7 @@ class LoginForm extends Model
     }
 
     /**
-     * @param $attribute
-     *
+     * @param string
      * @return void
      */
     public function validatePassword($attribute): void

@@ -14,6 +14,7 @@ use yii\web\Response;
 
 final class TaskCancelController extends Controller
 {
+
     /**
      * @return array
      */

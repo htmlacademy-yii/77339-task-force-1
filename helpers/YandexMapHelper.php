@@ -18,10 +18,6 @@ final class YandexMapHelper extends Component
     private int $cacheDuration = 86400;
     private Api $apiClient;
 
-    /**
-     * @param string $apiKey
-     * @param array $config
-     */
     public function __construct(string $apiKey, $config = [])
     {
         $this->apiKey = $apiKey;
@@ -30,9 +26,8 @@ final class YandexMapHelper extends Component
     }
 
     /**
-     * @param string $address
-     *
-     * @return array|null
+     * @param string $apiKey
+     * @param array $config
      */
     public function getCoordinates($address): ?array
     {
@@ -74,9 +69,8 @@ final class YandexMapHelper extends Component
     }
 
     /**
-     * @param float $latitude
-     * @param float $longitude
-     *
+     * @param float
+     * @param float
      * @return array|ActiveRecord
      */
     public function findNearestCity(float $latitude, float $longitude): array|ActiveRecord
@@ -92,9 +86,8 @@ final class YandexMapHelper extends Component
     }
 
     /**
-     * @param float|null $latitude
-     * @param float|null $longitude
-     *
+     * @param float|null
+     * @param float|null
      * @return string
      */
     public function getAddress(?float $latitude, ?float $longitude): string
@@ -147,7 +140,8 @@ final class YandexMapHelper extends Component
     }
 
     /**
-     * @param CacheInterface 
+     * @param CacheInterface
+     * @return void
      */
     public function setCache(CacheInterface $cache): void
     {
@@ -156,6 +150,7 @@ final class YandexMapHelper extends Component
 
     /**
      * @param int
+     * @return void
      */
     public function setCacheDuration(int $seconds): void
     {

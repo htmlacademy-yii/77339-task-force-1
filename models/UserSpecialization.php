@@ -6,11 +6,11 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
- * @property int $user_id
- * @property int $category_id
+ * @property int
+ * @property int
  *
- * @property Category $category
- * @property User $user
+ * @property Category
+ * @property User
  */
 class UserSpecialization extends ActiveRecord
 {

@@ -6,12 +6,12 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
- * @property int $id
- * @property int $task_id
- * @property string $path
- * @property string|null $created_at
+ * @property int
+ * @property int
+ * @property string
+ * @property string|null
  *
- * @property Task $task
+ * @property Task
  */
 class File extends ActiveRecord
 {

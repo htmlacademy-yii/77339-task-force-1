@@ -1,6 +1,6 @@
 # Личный проект «TaskForce»
 
-* Студент: [Антон Башко](https://up.htmlacademy.ru/yii-individual/1/user/1515049).
+* Студент: [Наталья Романова](https://up.htmlacademy.ru/yii-individual/1/user/1515049).
 * Наставник: `Сергей Парфёнов`.
 
 [Читать инструкцию по запуску проекта на локальном хосте](./INSTALL.md)

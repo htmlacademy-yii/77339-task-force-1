@@ -6,19 +6,17 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
- * This is the model class for table "reviews".
+ * @property int
+ * @property int
+ * @property int
+ * @property int
+ * @property int
+ * @property string|null
+ * @property string|null
  *
- * @property int $id
- * @property int $task_id
- * @property int $customer_id
- * @property int $executor_id
- * @property int $rating
- * @property string|null $comment
- * @property string|null $created_at
- *
- * @property User $customer
- * @property User $executor
- * @property Task $task
+ * @property User
+ * @property User
+ * @property Task
  */
 class Review extends ActiveRecord
 {
@@ -82,6 +80,11 @@ class Review extends ActiveRecord
             'created_at' => 'Created At',
         ];
     }
+    /**
+     * @param bool
+     * @param array
+     * @return void
+     */
 
     public function afterSave($insert, $changedAttributes): void
     {
@@ -92,6 +95,9 @@ class Review extends ActiveRecord
         }
     }
 
+    /**
+     * @return void
+     */
     public function afterDelete(): void
     {
         parent::afterDelete();

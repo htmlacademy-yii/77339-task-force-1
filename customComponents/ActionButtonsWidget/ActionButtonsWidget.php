@@ -1,6 +1,6 @@
 <?php
 
-namespace app\components\ActionButtonsWidget;
+namespace app\customComponents\ActionButtonsWidget;
 
 use app\logic\Actions\AbstractAction;
 use app\logic\AvailableActions;
@@ -16,9 +16,6 @@ final class ActionButtonsWidget extends Widget
     public int $currentUserId;
     public Task $task;
 
-    /**
-     * @return string
-     */
     public function run() : string
     {
         $actions = $this->availableActions->getAvailableActions($this->currentUserId);
@@ -45,16 +42,15 @@ final class ActionButtonsWidget extends Widget
         return implode(PHP_EOL, $buttons);
     }
 
-    /**
-     * @return bool
-     */
     private function hasResponded() : bool
     {
         return Response::find()->where(['task_id' => $this->task->id, 'executor_id' => $this->currentUserId])->exists();
     }
 
     /**
-     * @param AbstractAction
+     * Генерирует HTML-код кнопки действия
+     *
+     * @param AbstractAction $action
      *
      * @return string
      */
@@ -74,11 +70,6 @@ final class ActionButtonsWidget extends Widget
         );
     }
 
-    /**
-     * @param string
-     *
-     * @return string
-     */
     private function getButtonColor(string $actionName) : string
     {
         return match ($actionName) {

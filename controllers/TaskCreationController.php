@@ -10,6 +10,7 @@ use yii\web\Response;
 
 final class TaskCreationController extends SecuredController
 {
+
     /**
      * @return array
      */
@@ -48,7 +49,6 @@ final class TaskCreationController extends SecuredController
 
     /**
      * @param string|null
-     *
      * @return array
      */
     public function actionCityList($term = null): array
@@ -90,10 +90,9 @@ final class TaskCreationController extends SecuredController
     }
 
     /**
-     * @param Task $model
-     * @param array $categories
-     * @param array $cities
-     *
+     * @param Task
+     * @param array
+     * @param array
      * @return string
      */
     protected function renderCreateForm($model, $categories, $cities): string

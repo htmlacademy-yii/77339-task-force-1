@@ -13,6 +13,9 @@ class SignupForm extends Model
     public $city;
     public bool $is_executor = false;
 
+    /**
+     * @return array
+     */
     public function rules(): array
     {
         return [
@@ -29,6 +32,9 @@ class SignupForm extends Model
         ];
     }
 
+    /**
+     * @return array
+     */
     public function attributeLabels(): array
     {
         return [

@@ -1,38 +1,46 @@
 <?php
+
+use app\interfaces\FilesUploadInterface;
+use app\logic\Actions\CreateTaskAction;
+use app\services\FileUploader;
+use yii\symfonymailer\Mailer;
+
+$params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'language' => 'ru-RU',
     'bootstrap' => ['log'],
-    'defaultRoute' => 'tasks/index',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
     ],
     'components' => [
-        'authManager' => [
-            'class' => 'yii\rbac\PhpManager',
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'locale' => 'ru-RU',
+            'dateFormat' => 'php: d.m.Y',
+            'timeFormat' => 'php: H:i:s',
+            'datetimeFormat' => 'php: d.m.Y H:i:s',
         ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => '26lQBaA3QYLY27MyYpcujCPmS2KhHeuX',
-            'baseUrl' => '',
+            'cookieValidationKey' => 'v0lZHRxhb3helZ2OZp8at4wgBydAQntQ',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\Users',
+            'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
-            'loginUrl' => ['/login']
+            'loginUrl' => ['site/index'],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
         'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
+            'class' => Mailer::class,
             'viewPath' => '@app/mail',
             // send all mails to a file by default.
             'useFileTransport' => true,
@@ -42,7 +50,7 @@ $config = [
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
+                    'levels' => ['error', 'warning', 'info', 'trace', 'profile'],
                 ],
             ],
         ],
@@ -50,27 +58,28 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => false,
             'rules' => [
+                'tasks' => 'tasks/index',
+                'publish' => 'task-creation/create',
                 'tasks/view/<id:\d+>' => 'tasks/view',
-                'user/view/<id:\d+>' => 'user/view',
-                'tasks/category/<id:\d+>' => 'tasks/index',
-            ],
-        ],
-        'formatter' => [
-            'class' => '\app\components\FormatterHelper',
-            'dateFormat' => 'dd.MM.yyyy',
-            'locale' => 'ru-RU'
-        ],
-        'i18n' => [
-            'translations' => [
-                'app' => [
-                    'class' => 'yii\i18n\PhpMessageSource',
-                ],
+                'users/view/<id:\d+>' => 'users/view',
+                'signup' => 'signup/index',
+                'login' => 'auth/login',
+                'logout' => 'auth/logout',
+                'tasks/city-list' => 'tasks/city-list',
+                'my-tasks' => 'my-tasks/index',
+                'my-tasks/<status>' => 'my-tasks/index',
+                'account/settings' => 'account-settings/settings',
             ],
         ],
     ],
-    'params' => require __DIR__ . '/params.php',
+    'container' => [
+        'singletons' => [
+            FilesUploadInterface::class => ['class' => FileUploader::class],
+            CreateTaskAction::class => CreateTaskAction::class,
+        ],
+    ],
+    'params' => $params,
 ];
 
 if (YII_ENV_DEV) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\components\MainMenuWidget;
+namespace app\customComponents\MainMenuWidget;
 
 use Yii;
 use yii\base\Widget;
@@ -10,13 +10,12 @@ use yii\helpers\Url;
 class MainMenuWidget extends Widget
 {
     /**
+     * Массив пунктов меню.
+     *
      * @var array[]
      */
     public array $items = [];
 
-    /**
-     * @return string
-     */
     public function run() : string
     {
         $output = '<ul class="nav-list">';
