@@ -11,11 +11,13 @@ use yii\web\Response;
 
 final class GeocoderController extends Controller
 {
+
     /**
-     * @param string $query
+     * @param string
      *
      * @return array
      */
+
     public function actionAutocomplete($query): array
     {
         Yii::$app->response->format = Response::FORMAT_JSON;

@@ -25,6 +25,9 @@ class TasksController extends SecuredController
         parent::__construct($id, $module, $config);
     }
 
+    /**
+     * @return string
+     */
     public function actionIndex(): string
     {
         $task = new Task();

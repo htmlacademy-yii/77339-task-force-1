@@ -13,7 +13,6 @@ class SignupUserAction
      * @return User|null
      * @throws Exception|\yii\base\Exception
      */
-    
     public function execute(SignupForm $form): ?User
     {
         $user = new User();

@@ -1,15 +1,16 @@
 <?php
 /**
- * @var string
- * @var int
- * @var float
- * @var int
+ * @var string $wrapperClass - класс контейнера (например "stars-rating small")
+ * @var int $fullStars - количество полностью заполненных звезд
+ * @var float $partialStar - значение частичного заполнения (от 0.0 до 1.0)
+ * @var int $emptyStars - количество пустых звезд
  */
 
 use yii\helpers\Html;
 
 $isBig = str_contains($wrapperClass, 'big');
 
+// Параметры для разных размеров
 $params = $isBig ? [
     'size' => 25,
     'padding' => 0,
@@ -28,6 +29,7 @@ $starPath = 'M13.626,15.367L12.742,10.216L16.485,6.568L11.313,5.816L9,1.13L6.687
 
 <div class="<?= Html::encode($wrapperClass) ?>">
     <?php
+    // Полностью заполненные звезды
     for ($i = 0; $i < $fullStars; $i++) {
         echo '<span style="display:inline-block;padding:' . $params['padding'] . 'px;margin-right:' . $params['marginRight'] . 'px;' . (isset($params['marginTop']) ? 'margin-top:' . $params['marginTop'] . 'px' : '') . '">
             <svg width="' . $params['size'] . '" height="' . $params['size'] . '" viewBox="0 0 18 17">
@@ -36,6 +38,7 @@ $starPath = 'M13.626,15.367L12.742,10.216L16.485,6.568L11.313,5.816L9,1.13L6.687
         </span>';
     }
 
+    // Частично заполненная звезда
     if ($partialStar > 0) {
         $fillWidth = round($partialStar * 100, 2);
         echo '<span style="display:inline-block;padding:' . $params['padding'] . 'px;margin-right:' . $params['marginRight'] . 'px;' . (isset($params['marginTop']) ? 'margin-top:' . $params['marginTop'] . 'px' : '') . '">
@@ -51,6 +54,7 @@ $starPath = 'M13.626,15.367L12.742,10.216L16.485,6.568L11.313,5.816L9,1.13L6.687
         </span>';
     }
 
+    // Пустые звезды
     for ($i = 0; $i < $emptyStars; $i++) {
         echo '<span style="display:inline-block;padding:' . $params['padding'] . 'px;margin-right:' . $params['marginRight'] . 'px;' . (isset($params['marginTop']) ? 'margin-top:' . $params['marginTop'] . 'px' : '') . '">
             <svg width="' . $params['size'] . '" height="' . $params['size'] . '" viewBox="0 0 18 17">

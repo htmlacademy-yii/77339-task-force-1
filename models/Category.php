@@ -7,19 +7,18 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
- * @property int $id
- * @property string $name
- * @property string|null $icon
+ * @property int
+ * @property string
+ * @property string|null
  *
  * @property Task[] $task
- * @property UserSpecialization[] $userSpecialization
- * @property-read ActiveQuery $tasks
- * @property-read ActiveQuery $userSpecializations
- * @property User[] $user
+ * @property UserSpecialization[]
+ * @property-read ActiveQuery
+ * @property-read ActiveQuery
+ * @property User[]
  */
 class Category extends ActiveRecord
 {
-
 
     /**
      * {@inheritdoc}

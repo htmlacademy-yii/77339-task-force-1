@@ -95,9 +95,7 @@ class AvailableActions
     }
 
     /**
-     *
      * @param AbstractAction
-     *
      * @return string|null
      * @throws \Exception
      */
@@ -125,7 +123,6 @@ class AvailableActions
 
     /**
      * @param int
-     *
      * @return array|string[]
      */
     public function getAvailableActions(int $userId) : array

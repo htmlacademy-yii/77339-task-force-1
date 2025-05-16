@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\controllers\SecuredController;
 use app\logic\AvailableActions;
 use app\models\Task;
 use Yii;
@@ -11,13 +10,16 @@ use yii\web\NotFoundHttpException;
 
 final class MyTasksController extends SecuredController
 {
+
     /**
      * @return string
      */
     public function actionIndex() : string
     {
-        $user = Yii::$app->user->identity;
-        $status = Yii::$app->request->get('status', 'new');
+        $user =
+            Yii::$app->user->identity;
+        $status =
+            Yii::$app->request->get('status', 'new');
 
         if ($user->isRoleCustomer()) {
             return $this->renderCustomerTasks($status);
@@ -29,22 +31,25 @@ final class MyTasksController extends SecuredController
     }
 
     /**
-     * @param string $statusFilter
+     * @param string
      *
      * @return string
      */
     private function renderCustomerTasks(string $statusFilter) : string
     {
-        $query = Task::find()->where(['customer_id' => Yii::$app->user->id]);
+        $query =
+            Task::find()->where(['customer_id' => Yii::$app->user->id]);
 
         switch ($statusFilter) {
             case 'new':
                 $query->andWhere(['status' => AvailableActions::STATUS_NEW]);
-                $title = 'Новые задания';
+                $title =
+                    'Новые задания';
                 break;
             case 'in_progress':
                 $query->andWhere(['status' => AvailableActions::STATUS_IN_PROGRESS]);
-                $title = 'В процессе';
+                $title =
+                    'В процессе';
                 break;
             case 'closed':
                 $query->andWhere(
@@ -58,24 +63,28 @@ final class MyTasksController extends SecuredController
                         ]
                     ]
                 );
-                $title = 'Закрытые';
+
+                $title =
+                    'Закрытые';
                 break;
             default:
                 $query->andWhere(['status' => AvailableActions::STATUS_NEW]);
-                $title = 'Новые задания';
+                $title =
+                    'Новые задания';
         }
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'pageSize' => 5,
-            ],
-            'sort' => [
-                'defaultOrder' => [
-                    'created_at' => SORT_DESC,
+        $dataProvider =
+            new ActiveDataProvider([
+                'query' => $query,
+                'pagination' => [
+                    'pageSize' => 5,
+                ],
+                'sort' => [
+                    'defaultOrder' => [
+                        'created_at' => SORT_DESC,
+                    ]
                 ]
-            ]
-        ]);
+            ]);
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -86,24 +95,28 @@ final class MyTasksController extends SecuredController
     }
 
     /**
-     * @param string $statusFilter
+     * @param string
      *
      * @return string
      */
     private function renderExecutorTasks(string $statusFilter) : string
     {
-        $query = Task::find()->innerJoinWith('responses')->where(['responses.executor_id' => Yii::$app->user->id]);
+        $query =
+            Task::find()->innerJoinWith('responses')->where(['responses.executor_id' => Yii::$app->user->id]);
 
         switch ($statusFilter) {
             case 'in_progress':
                 $query->andWhere(['status' => AvailableActions::STATUS_IN_PROGRESS]);
-                $title = 'В процессе';
+                $title =
+                    'В процессе';
+
                 break;
             case 'expired':
                 $query->andWhere(['status' => AvailableActions::STATUS_IN_PROGRESS])->andWhere(
                     ['<', 'ended_at', date('Y-m-d H:i:s')]
                 );
-                $title = 'Просроченные задания';
+                $title =
+                    'Просроченные задания';
                 break;
 
             case 'closed':
@@ -115,25 +128,28 @@ final class MyTasksController extends SecuredController
                         AvailableActions::STATUS_FAILED
                     ]
                 ]);
-                $title = 'Закрытые';
+                $title =
+                    'Закрытые';
                 break;
 
             default:
                 $query->andWhere(['status' => AvailableActions::STATUS_IN_PROGRESS]);
-                $title = 'В процессе';
+                $title =
+                    'В процессе';
         }
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'pageSize' => 5,
-            ],
-            'sort' => [
-                'defaultOrder' => [
-                    'created_at' => SORT_DESC,
+        $dataProvider =
+            new ActiveDataProvider([
+                'query' => $query,
+                'pagination' => [
+                    'pageSize' => 5,
+                ],
+                'sort' => [
+                    'defaultOrder' => [
+                        'created_at' => SORT_DESC,
+                    ]
                 ]
-            ]
-        ]);
+            ]);
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,

@@ -27,7 +27,7 @@ final class AccountSettingsForm extends Model
     /**
      * @return array
      */
-    public function rules() : array
+    public function rules()
     {
         return [
             [['show_contacts'], 'boolean'],
@@ -82,8 +82,7 @@ final class AccountSettingsForm extends Model
     }
 
     /**
-     * @param User $user
-     *
+     * @param User
      * @return void
      */
     public function applyToUser($user) : void
@@ -110,11 +109,10 @@ final class AccountSettingsForm extends Model
 
     /**
      * @param string
-     * @param arra
-     *
+     * @param array
      * @return void
      */
-    public function validatePassword($attribute, $params) : void
+    public function validatePassword($attribute, $params)
     {
         if (!empty($this->old_password) && !Yii::$app->user->identity->validatePassword($this->old_password)) {
             $this->addError($attribute, 'Неверный текущий пароль');

@@ -10,9 +10,11 @@ use yii\widgets\ActiveForm;
 
 class AuthController extends Controller
 {
+
     /**
      * @return Response|array|string
      */
+
     public function actionLogin(): Response|array|string
     {
         $loginForm = new LoginForm();
@@ -40,6 +42,7 @@ class AuthController extends Controller
     /**
      * @return Response
      */
+
     public function actionLogout(): Response
     {
         Yii::$app->user->logout();

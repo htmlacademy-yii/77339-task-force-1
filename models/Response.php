@@ -6,17 +6,15 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
- * This is the model class for table "responses".
+ * @property int
+ * @property int
+ * @property int
+ * @property int|null
+ * @property string|null
+ * @property string|null
  *
- * @property int $id
- * @property int $task_id
- * @property int $executor_id
- * @property int|null $price
- * @property string|null $comment
- * @property string|null $created_at
- *
- * @property User $executor
- * @property Task $task
+ * @property User
+ * @property Task
  */
 class Response extends ActiveRecord
 {

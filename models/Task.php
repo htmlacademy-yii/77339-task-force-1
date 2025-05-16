@@ -6,7 +6,7 @@ use app\interfaces\FilesUploadInterface;
 use app\logic\Actions\CreateTaskAction;
 use app\logic\AvailableActions;
 use InvalidArgumentException;
-use Yii;
+use RuntimeException;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -62,6 +62,9 @@ class Task extends ActiveRecord
         return 'tasks';
     }
 
+    /**
+     * @return array
+     */
     public function rules() : array
     {
         return [
@@ -106,6 +109,7 @@ class Task extends ActiveRecord
     }
 
     /**
+     * @param array
      * @return void
      */
     public function setLocation(array $location) : void
@@ -113,8 +117,8 @@ class Task extends ActiveRecord
         if (count($location) !== 2) {
             throw new InvalidArgumentException('Location must contain exactly 2 elements - latitude and longitude');
         }
-
-        [$this->latitude, $this->longitude] = $location;
+        [$this->latitude, $this->longitude] =
+            $location;
     }
 
     /**
@@ -142,9 +146,12 @@ class Task extends ActiveRecord
      */
     public function clearLocation() : void
     {
-        $this->latitude = null;
-        $this->longitude = null;
-        $this->city_id = null;
+        $this->latitude =
+            null;
+        $this->longitude =
+            null;
+        $this->city_id =
+            null;
     }
 
     /**
@@ -172,41 +179,55 @@ class Task extends ActiveRecord
 
     public function scenarios() : array
     {
-        $scenarios = parent::scenarios();
-        $scenarios[CreateTaskAction::SCENARIO_CREATE] = [
-            'title',
-            'description',
-            'category_id',
-            'budget',
-            'location',
-            'city_id',
-            'latitude',
-            'longitude',
-            'ended_at',
-            'files'
-        ];
+        $scenarios =
+            parent::scenarios();
+        $scenarios[CreateTaskAction::SCENARIO_CREATE] =
+            [
+                'title',
+                'description',
+                'category_id',
+                'budget',
+                'location',
+                'city_id',
+                'latitude',
+                'longitude',
+                'ended_at',
+                'files'
+            ];
 
         return $scenarios;
     }
 
+    /**
+     * @return void
+     */
     public function defineScenario($name, $attributes) : void
     {
-        $scenarios = $this->scenarios();
-        $scenarios[$name] = $attributes;
+        $scenarios =
+            $this->scenarios();
+        $scenarios[$name] =
+            $attributes;
         $this->setScenario($name);
     }
 
     private FilesUploadInterface $fileUploader;
 
+    /**
+     * @return void
+     */
     public function setFileUploader(FilesUploadInterface $fileUploader) : void
     {
-        $this->fileUploader = $fileUploader;
+        $this->fileUploader =
+            $fileUploader;
     }
 
+    /**
+     * @return array
+     */
     public function processFiles(array $files) : array
     {
         if ($this->isNewRecord) {
-            throw new \RuntimeException('Невозможно обработать файлы для несохраненной задачи');
+            throw new RuntimeException('Невозможно обработать файлы для несохраненной задачи');
         }
 
         return $this->fileUploader->upload($files, $this->id);
@@ -221,9 +242,8 @@ class Task extends ActiveRecord
     }
 
     /**
-     * @param $attribute
-     * @param $params
-     *
+     * @param string
+     * @param array 
      * @return bool
      */
     public function validateDeadline($attribute, $params) : bool
@@ -248,11 +268,15 @@ class Task extends ActiveRecord
      */
     public function getSearchQuery() : ActiveQuery
     {
-        $query = self::find()->where(['status' => AvailableActions::STATUS_NEW]);
+        $query =
+            self::find()->where(['status' => AvailableActions::STATUS_NEW]);
         $query->andWhere(['>=', 'ended_at', date('Y-m-d')]);
 
         if (!empty($this->categoryIds)) {
-            $categoryIds = is_array($this->categoryIds) ? $this->categoryIds : array_filter(explode(',', $this->categoryIds));
+            $categoryIds =
+                is_array($this->categoryIds) ? $this->categoryIds : array_filter(
+                    explode(',', $this->categoryIds)
+                );
 
             if (!empty($categoryIds)) {
                 $query->andWhere(['category_id' => $categoryIds]);
@@ -268,7 +292,8 @@ class Task extends ActiveRecord
         }
 
         if (!empty($this->filterPeriod)) {
-            $period = (int)$this->filterPeriod;
+            $period =
+                (int)$this->filterPeriod;
             if ($period > 0) {
                 $query->andWhere(['>=', 'tasks.created_at', date('Y-m-d H:i:s', time() - $period)]);
             }
@@ -278,8 +303,6 @@ class Task extends ActiveRecord
     }
 
     /**
-     * @param int $pageSize
-     *
      * @return ActiveDataProvider
      */
     public function getDataProvider($pageSize = 5) : ActiveDataProvider
@@ -287,7 +310,7 @@ class Task extends ActiveRecord
         return new ActiveDataProvider([
             'query' => $this->getSearchQuery(),
             'pagination' => ['pageSize' => $pageSize],
-            'sort' => ['defaultOrder' => ['created_at' => SORT_DESC]]
+            'sort' => ['defaultOrder' => ['created_at' => SORT_DESC]],
         ]);
     }
 
@@ -316,9 +339,6 @@ class Task extends ActiveRecord
     }
 
     /**
-     * @param ActiveQuery $query
-     * @param int $hours
-     *
      * @return ActiveQuery
      */
     public static function filterByPeriod(ActiveQuery $query, int $hours) : ActiveQuery
@@ -327,9 +347,6 @@ class Task extends ActiveRecord
     }
 
     /**
-     * @param ActiveQuery $query
-     * @param array $categoryIds
-     *
      * @return ActiveQuery
      */
     public static function filterByCategories(ActiveQuery $query, array $categoryIds) : ActiveQuery
@@ -395,7 +412,8 @@ class Task extends ActiveRecord
 
     public function setStatusToNew() : void
     {
-        $this->status = AvailableActions::STATUS_NEW;
+        $this->status =
+            AvailableActions::STATUS_NEW;
     }
 
     /**
@@ -408,7 +426,8 @@ class Task extends ActiveRecord
 
     public function setStatusToInProgress() : void
     {
-        $this->status = AvailableActions::STATUS_IN_PROGRESS;
+        $this->status =
+            AvailableActions::STATUS_IN_PROGRESS;
     }
 
     /**
@@ -421,7 +440,8 @@ class Task extends ActiveRecord
 
     public function setStatusToCompleted() : void
     {
-        $this->status = AvailableActions::STATUS_COMPLETED;
+        $this->status =
+            AvailableActions::STATUS_COMPLETED;
     }
 
     /**
@@ -432,9 +452,13 @@ class Task extends ActiveRecord
         return $this->status === AvailableActions::STATUS_FAILED;
     }
 
+    /**
+     * @return void
+     */
     public function setStatusToFailed() : void
     {
-        $this->status = AvailableActions::STATUS_FAILED;
+        $this->status =
+            AvailableActions::STATUS_FAILED;
     }
 
     /**
@@ -445,8 +469,12 @@ class Task extends ActiveRecord
         return $this->status === AvailableActions::STATUS_CANCELLED;
     }
 
+    /**
+     * @return void
+     */
     public function setStatusToCanceled() : void
     {
-        $this->status = AvailableActions::STATUS_CANCELLED;
+        $this->status =
+            AvailableActions::STATUS_CANCELLED;
     }
 }

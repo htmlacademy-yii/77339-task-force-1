@@ -16,89 +16,91 @@ $this->registerJsFile(
     ['depends' => JqueryAsset::class]
 );
 ?>
-<main class="main-content main-content--center container">
-    <style>
-        .help-block:empty {
-            display: none;
-        }
-    </style>
-    <div class="add-task-form regular-form">
-        <?php
-        $form = ActiveForm::begin([
-            'options' => ['enctype' => 'multipart/form-data'],
-            'fieldConfig' => [
-                'template' => "{label}\n{input}\n{error}",
-                'errorOptions' => ['tag' => 'span', 'class' => 'help-block'],
-            ],
-        ]) ?>
-        <h3 class="head-main head-main"><?= Html::encode($this->title) ?></h3>
-        <div class="form-group">
-            <?= $form->field($model, 'title')->textInput(['id' => 'essence-work']) ?>
-        </div>
-        <div class="form-group">
-            <?= $form->field($model, 'description', [
-                'inputOptions' => [
-                    'class' => 'form-control',
-                    'rows' => 5
-                ]
-            ])->textarea(['id' => 'username']) ?>
-        </div>
-        <div class="form-group">
-            <?= $form->field($model, 'category_id', [
-                'inputOptions' => [
-                    'id' => 'town-user',
-                    'class' => 'form-control'
-                ]
-            ])->dropDownList(
-                ArrayHelper::map($categories, 'id', 'name'),
-                ['prompt' => 'Выберите категорию']
-            ) ?>
-        </div>
-        <div class="form-group">
-            <?= $form->field($model, 'location')->textInput([
-                'id' => 'location',
-                'class' => 'location-icon',
-                'placeholder' => 'Город, улица, дом',
-                'autocomplete' => 'off'
+    <main class="main-content main-content--center container">
+        <style>
+            .help-block:empty {
+                display: none;
+            }
+        </style>
+        <div class="add-task-form regular-form">
+            <?php
+            $form = ActiveForm::begin([
+                'options' => ['enctype' => 'multipart/form-data'],
+                'fieldConfig' => [
+                    'template' => "{label}\n{input}\n{error}",
+                    'errorOptions' => ['tag' => 'span', 'class' => 'help-block'],
+                ],
             ]) ?>
+            <h3 class="head-main head-main"><?= Html::encode($this->title) ?></h3>
 
-            <?= $form->field($model, 'latitude')->hiddenInput(['id' => 'task-latitude'])->label(false) ?>
-            <?= $form->field($model, 'longitude')->hiddenInput(['id' => 'task-longitude'])->label(false) ?>
-
-        </div>
-        <div class="half-wrapper">
             <div class="form-group">
-                <?= $form->field($model, 'budget', [
-                    'inputOptions' => [
-                        'id' => 'budget',
-                        'class' => 'budget-icon'
-                    ]
-                ])->textInput() ?>
+                <?= $form->field($model, 'title')->textInput(['id' => 'essence-work']) ?>
             </div>
             <div class="form-group">
-                <?= $form->field($model, 'ended_at', [
+                <?= $form->field($model, 'description', [
                     'inputOptions' => [
-                        'id' => 'period-execution',
                         'class' => 'form-control',
-                        'min' => date('Y-m-d')
+                        'rows' => 5
                     ]
-                ])->input('date') ?>
+                ])->textarea(['id' => 'username']) ?>
             </div>
+            <div class="form-group">
+                <?= $form->field($model, 'category_id', [
+                    'inputOptions' => [
+                        'id' => 'town-user',
+                        'class' => 'form-control'
+                    ]
+                ])->dropDownList(
+                    ArrayHelper::map($categories, 'id', 'name'),
+                    ['prompt' => 'Выберите категорию']
+                ) ?>
+            </div>
+            <div class="form-group">
+                <?= $form->field($model, 'location')->textInput([
+                    'id' => 'location',
+                    'class' => 'location-icon',
+                    'placeholder' => 'Город, улица, дом',
+                    'autocomplete' => 'off'
+                ]) ?>
+
+                <?= $form->field($model, 'latitude')->hiddenInput(['id' => 'task-latitude'])->label(false) ?>
+                <?= $form->field($model, 'longitude')->hiddenInput(['id' => 'task-longitude'])->label(false) ?>
+
+            </div>
+            <div class="half-wrapper">
+                <div class="form-group">
+                    <?= $form->field($model, 'budget', [
+                        'inputOptions' => [
+                            'id' => 'budget',
+                            'class' => 'budget-icon'
+                        ]
+                    ])->textInput() ?>
+                </div>
+                <div class="form-group">
+                    <?= $form->field($model, 'ended_at', [
+                        'inputOptions' => [
+                            'id' => 'period-execution',
+                            'class' => 'form-control',
+                            'min' => date('Y-m-d')
+                        ]
+                    ])->input('date') ?>
+                </div>
+            </div>
+            <p class="form-label">Файлы</p>
+            <div class="new-file">
+                <?= $form->field($model, 'files[]', ['template' => '{input}'])->fileInput([
+                    'multiple' => true,
+                    'hidden' => true,
+                    'id' => 'file-upload',
+                ]) ?>
+                <label for="file-upload">Добавить новый файл</label>
+            </div>
+            <?= Html::submitInput('Опубликовать', ['class' => 'button button--blue']) ?>
+            <?php
+            ActiveForm::end() ?>
         </div>
-        <p class="form-label">Файлы</p>
-        <div class="new-file">
-            <?= $form->field($model, 'files[]', ['template' => '{input}'])->fileInput([
-                'multiple' => true,
-                'hidden' => true,
-                'id' => 'file-upload',
-            ]) ?>
-            <label for="file-upload">Добавить новый файл</label>
-        </div>
-        <?= Html::submitInput('Опубликовать', ['class' => 'button button--blue']) ?>
-        <?php
-        ActiveForm::end() ?>
-    </div>
-</main>
+    </main>
+
 
 <?php
 $this->registerCss(
@@ -147,55 +149,64 @@ CSS
 );
 
 $this->registerJs(
-    <<<JS
-new autoComplete({
-    selector: '#location',
-    placeHolder: "Город, улица, дом...",
-    debounce: 300,
-    threshold: 3,
-    searchEngine: "strict",
-    data: {
-        src: async (query) => {
-            if (!query || query.length < 3) return [];
-            try {
-                const response = await fetch('/task-creation/city-list?term=' + encodeURIComponent(query));
-                return await response.json();
-            } catch (error) {
-                console.error('Fetch error:', error);
-                return [];
-            }
-        },
-        keys: ['value'],
-        cache: true
-    },
-    resultsList: {
-        element: (list, data) => {
-            if (!data.results.length) {
-                list.innerHTML = `<div class="no-result"><span>Продолжите ввод (минимум 3 символа)</span></div>`;
-            }
-        },
-        noResults: true,
-        maxResults: 10,
-    },
-    resultItem: {
-        highlight: {
-            render: true
-        }
-    },
-    events: {
-        input: {
-            selection: (event) => {
-                const selection = event.detail.selection.value.value;
-                $('#location').val(selection);
-                if (event.detail.selection.value.latitude && event.detail.selection.value.longitude) {
-                    $('#task-latitude').val(event.detail.selection.value.latitude);
-                    $('#task-longitude').val(event.detail.selection.value.longitude);
+    <<<'JS'
+(function($) {
+    $(function() {
+        new autoComplete({
+            selector: '#location',
+            placeHolder: "Город, улица, дом...",
+            debounce: 300,
+            threshold: 3,
+            data: {
+                src: function(query) {
+                    return new Promise(function(resolve) {
+                        if (!query || query.length < 3) return resolve([]);
+                        
+                        $.getJSON('/task-creation/city-list', {term: query})
+                            .done(function(data) {
+                                let results = data.map(function(item) {
+                                    return {
+                                        value: item.value,
+                                        label: item.value,
+                                        data: item
+                                    };
+                                });
+                                resolve(results);
+                            })
+                            .fail(function() { resolve([]) });
+                    });
+                },
+                keys: ['value'],
+                cache: false
+            },
+            resultsList: {
+                element: function(list, data) {
+                    if (!data.results.length) {
+                        list.innerHTML = '<div class="no-result">' + 
+                            (data.query.length < 3 ? 'Введите 3+ символа' : 'Ничего не найдено') + 
+                            '</div>';
+                    }
+                },
+                noResults: true,
+                maxResults: 10
+            },
+            resultItem: {
+                content: function(data, element) {
+                    element.textContent = data.match;
+                },
+                highlight: true
+            },
+            onSelection: function(feedback) {
+                var selection = feedback.selection;
+                $('#location').val(selection.value);
+                if (selection.data.latitude && selection.data.longitude) {
+                    $('#task-latitude').val(selection.data.latitude);
+                    $('#task-longitude').val(selection.data.longitude);
                 }
             }
-        }
-    }
-});
+        });
+    });
+})(jQuery);
 JS,
     View::POS_READY
 );
-?>

@@ -193,8 +193,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @param string $email
-     *
+     * @param string
      * @return static|null
      */
     public static function findByEmail(string $email) : ?self
@@ -203,8 +202,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @param string $password
-     *
+     * @param string
      * @return bool
      */
     public function validatePassword(string $password) : bool
@@ -221,6 +219,9 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(Category::class, ['id' => 'category_id'])->viaTable('user_specializations', ['user_id' => 'id']);
     }
 
+    /**
+     * @return void
+     */
     public function updateCategories(array $categoryIds) : void
     {
         UserSpecialization::deleteAll(['user_id' => $this->id]);
@@ -234,7 +235,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return array
+     * Возвращает массив id категорий пользователя
      */
     public function getSelectedCategories() : array
     {

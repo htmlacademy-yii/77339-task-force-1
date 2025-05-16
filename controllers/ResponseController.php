@@ -15,9 +15,6 @@ use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
-/**
- *  Контроллер для обработки действий принять/отказать каждого отклика на задание
- */
 final class ResponseController extends Controller
 {
     public function behaviors() : array

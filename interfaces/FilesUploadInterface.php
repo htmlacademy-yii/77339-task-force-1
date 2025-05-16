@@ -10,7 +10,6 @@ use yii\base\Exception;
  * @return array
  * @throws Exception
  */
-
 interface FilesUploadInterface
 {
     public function upload(array $files, int $taskId): array;

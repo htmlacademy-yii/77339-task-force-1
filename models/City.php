@@ -6,15 +6,15 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
- * @property int $id
- * @property string $name
- * @property float|null $latitude
- * @property float|null $longitude
+ * @property int
+ * @property string
+ * @property float|null
+ * @property float|null
  *
- * @property Task[] $task
- * @property-read ActiveQuery $users
- * @property-read ActiveQuery $tasks
- * @property User[] $user
+ * @property Task[]
+ * @property-read ActiveQuery
+ * @property-read ActiveQuery
+ * @property User[]
  */
 class City extends ActiveRecord
 {

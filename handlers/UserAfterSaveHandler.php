@@ -9,6 +9,7 @@ use yii\db\BaseActiveRecord;
 
 class UserAfterSaveHandler extends Behavior
 {
+
     /**
      * @return array
      */
@@ -21,8 +22,7 @@ class UserAfterSaveHandler extends Behavior
     }
 
     /**
-     * @param AfterSaveEvent $event
-     *
+     * @param AfterSaveEvent
      * @return void
      */
     public function handleAfterSave(AfterSaveEvent $event): void
